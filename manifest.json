@@ -1,7 +1,7 @@
 {
   "name": "Morning Report Attendance",
   "short_name": "Attendance",
-  "description": "Adult Emergency Department Morning Report attendance registration.",
+  "description": "Adult Emergency Unit – Emergency Department Morning Report attendance registration.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

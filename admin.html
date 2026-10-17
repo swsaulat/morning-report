@@ -124,7 +124,7 @@
 <header class="brandbar">
   <div class="brandbar-in">
     <img class="brand-logo" src="logo.jpg" alt="Security Forces Hospital – Riyadh">
-    <div class="title">Attendance Admin<small id="sub">Adult Emergency Department · Morning Report</small></div>
+    <div class="title">Attendance Admin<small id="sub">Adult Emergency Unit – Emergency Department · Morning Report</small></div>
     <div class="me" id="me" hidden></div>
   </div>
 </header>
@@ -223,7 +223,7 @@
       </div>
     </section>
   </main>
-  <footer class="credit" style="margin-top:28px">Morning Report Attendance System · Developed by <b>Dr. Swaid Saulat</b><span class="sep">·</span>Patient Flow Management System, powered by Ruqelo<span class="sep">·</span><a href="https://patientflowms.com" target="_blank" rel="noopener">patientflowms.com</a><span class="sep">·</span><a href="https://ruqelo.com" target="_blank" rel="noopener">ruqelo.com</a></footer>
+  <footer class="credit" style="margin-top:28px">Morning Report Attendance System<span class="sep">·</span>Patient Flow Management System, powered by Ruqelo<span class="sep">·</span><a href="https://patientflowms.com" target="_blank" rel="noopener">patientflowms.com</a><span class="sep">·</span><a href="https://ruqelo.com" target="_blank" rel="noopener">ruqelo.com</a></footer>
 </div>
 
 <script src="config.js"></script>
@@ -572,8 +572,8 @@
     const m = MR.modal('Set classroom location',
       '<p class="muted" style="margin:0;font-size:13.5px">Stand in the middle of the Morning Report classroom with this phone. Wait until accuracy is under ~30 m, then save.</p>' +
       '<div class="geo-live" id="gLive">Waiting for location…</div>' +
-      '<label class="field"><span class="label">Allowed radius (metres)</span><input class="input" type="number" id="gRad" min="20" max="5000" value="' + ((S.data.settings && S.data.settings.radius) || 150) + '"></label>' +
-      '<p class="hint">Indoors, GPS is often ±20–60 m. 150 m covers the classroom and nearby corridors; reduce it if people register from the car park.</p>',
+      '<label class="field"><span class="label">Allowed radius (metres)</span><input class="input" type="number" id="gRad" min="20" max="5000" value="50"></label>' +
+      '<p class="hint">Indoors, GPS is often ±20–60 m. 50 m covers the classroom; the phone\'s reported uncertainty (up to 50 m) is added automatically.</p>',
       [{ label: 'Cancel', onClick: c => { stop = true; c(); } }, { label: 'Save this location', cls: 'btn-primary', onClick: async (close, btn) => {
         if (!best) return MR.toast('No location yet', 'bad');
         MR.busy(btn, true, 'Saving…');

@@ -27,7 +27,7 @@
     return { date: dayKey(n), label: label(n), dow: 'Sun', state, isSessionDay: isDay, note: '', start: hm(startAt), end: hm(closeAt),
       startAt: startAt.toISOString(), closeAt: closeAt.toISOString(), reportAt: new Date(closeAt.getTime() + 1800000).toISOString() };
   };
-  const tomorrow = () => { const t = new Date(Date.now() + 86400000); return { date: dayKey(t), label: label(t), start: '06:00', end: '07:00', state: 'upcoming', isSessionDay: true }; };
+  const tomorrow = () => { const t = new Date(Date.now() + 86400000); return { date: dayKey(t), label: label(t), start: '06:00', end: '06:45', state: 'upcoming', isSessionDay: true }; };
 
   // Demo history
   const NAMES = [['John Doe', 'R1 (PGY-1)', '123456'], ['Sara Ahmed', 'R1 (PGY-1)', '234567'], ['Khalid Al-Hassan', 'R2 (PGY-2)', '345678'], ['Fatima Al-Rashid', 'R2 (PGY-2)', '456789'],
@@ -54,13 +54,13 @@
       email: 'demo' + j + '@gmail.com', method: 'QR · Google · GPS', location: 'Passed', distance: 12 + j * 9, accuracy: 10 + j, device: 'iPhone · Safari', recordId: 'MR-DEMO-' + j, notes: '' }));
   }
   const audit = [];
-  const rejections = [{ at: hms(new Date(closeAt.getTime() - 600000)), email: 'late.person@gmail.com', fullName: 'Late Person', staffId: '999111', reason: 'GEO_OUTSIDE', message: 'You appear to be about 2.4 km from the Morning Report Classroom (allowed: 150 m).', distance: 2400, accuracy: 18 }];
+  const rejections = [{ at: hms(new Date(closeAt.getTime() - 600000)), email: 'late.person@gmail.com', fullName: 'Late Person', staffId: '999111', reason: 'GEO_OUTSIDE', message: 'You appear to be about 2.4 km from the Morning Report Classroom (allowed: 50 m).', distance: 2400, accuracy: 18 }];
 
   const cfg = () => ({
     ok: true, app: { name: 'Morning Report Attendance', version: '1.0.0 (demo)' },
-    institution: 'Security Forces Hospital – Riyadh', department: 'Adult Emergency Department', program: 'Morning Report',
+    institution: 'Security Forces Hospital – Riyadh', department: 'Adult Emergency Unit – Emergency Department', program: 'Morning Report',
     classroomName: 'Morning Report Classroom', timezone: TZ, session: session(), nextSession: session().state === 'open' || session().state === 'upcoming' ? null : tomorrow(),
-    geofence: scenario === 'nogeo' ? { enabled: false } : { enabled: true, lat: ROOM.lat, lng: ROOM.lng, radius: 150, buffer: 50, maxAccuracy: 300 },
+    geofence: scenario === 'nogeo' ? { enabled: false } : { enabled: true, lat: ROOM.lat, lng: ROOM.lng, radius: 50, buffer: 50, maxAccuracy: 300 },
     requireLiveCode: false, staffIdLabel: 'Staff / Badge ID', staffIdPattern: '^[A-Za-z0-9-]{3,20}$', levels: LEVELS, authMode: 'GOOGLE', googleClientId: 'demo',
     serverTime: new Date().toISOString()
   });
@@ -91,7 +91,7 @@
         if (s.state === 'upcoming') return err('WINDOW_NOT_OPEN', 'Registration opens at ' + s.start + ' (Riyadh time). Please try again then.');
         if (s.state === 'closed') return err('WINDOW_CLOSED', 'Registration for today closed at ' + s.end + '. It is now ' + hm(new Date()) + '. Late registrations are not accepted.');
         if (s.state === 'none') return err('NO_SESSION', 'There is no Morning Report scheduled today.');
-        if (scenario === 'outside') return err('GEO_OUTSIDE', 'You appear to be about 2.2 km from the Morning Report Classroom (allowed: 150 m). Attendance can only be registered from the classroom.');
+        if (scenario === 'outside') return err('GEO_OUTSIDE', 'You appear to be about 2.2 km from the Morning Report Classroom (allowed: 50 m). Attendance can only be registered from the classroom.');
         if (scenario === 'weak') return err('GEO_WEAK', 'Your phone could only locate you to within ±850 m, which is too imprecise to confirm you are in the classroom. Turn on Wi-Fi and Precise Location, move near a window, then tap Try again.');
         const today = rows.filter(r => r.date === s.date);
         const rec = { date: s.date, dateLabel: s.label, time: hms(new Date()), fullName: p.fullName, staffId: p.staffId, level: p.level, email: user.email,
@@ -101,9 +101,9 @@
       }
       case 'display': {
         const today = rows.filter(r => r.date === s.date);
-        return stamp({ institution: 'Security Forces Hospital – Riyadh', department: 'Adult Emergency Department', program: 'Morning Report', classroomName: 'Morning Report Classroom',
+        return stamp({ institution: 'Security Forces Hospital – Riyadh', department: 'Adult Emergency Unit – Emergency Department', program: 'Morning Report', classroomName: 'Morning Report Classroom',
           session: s, nextSession: s.state === 'closed' || s.state === 'none' ? tomorrow() : null, count: today.length, liveCode: qs.has('live') ? 'demo' + Math.floor(Date.now() / 30000).toString(36) : null,
-          codeRefreshSec: 30, attendeeUrl: '', geofence: true, radius: 150,
+          codeRefreshSec: 30, attendeeUrl: '', geofence: true, radius: 50,
           recent: today.slice(-8).reverse().map(r => ({ name: r.fullName.split(' ')[0] + ' ' + r.fullName.split(' ').slice(-1)[0][0] + '.', level: r.level, time: r.time.slice(0, 5) })) });
       }
       case 'admin.overview': {
@@ -121,7 +121,7 @@
           rejections: date === s.date ? rejections : [], audit: audit.filter(a => a.date === date), report: date < s.date ? { sentAt: date + 'T07:20:12+03:00', count: day.length, trigger: 'Auto (scheduled)' } : null,
           levels: LEVELS, warnings: [{ level: 'info', text: 'Demo mode: data is simulated. Set API_URL in config.js to connect the real Google Sheet.' }],
           links: { sheet: '#', archive: '#', attendee: './' }, displayKey: 'DEMOKEY',
-          settings: { windowStart: '06:00', windowEnd: '07:00', timezone: TZ, sessionDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu'], geofence: true, radius: 150, lat: ROOM.lat, lng: ROOM.lng, liveCode: false, reportDelay: 30, authMode: 'GOOGLE',
+          settings: { windowStart: '06:00', windowEnd: '06:45', timezone: TZ, sessionDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu'], geofence: true, radius: 50, lat: ROOM.lat, lng: ROOM.lng, liveCode: false, reportDelay: 30, authMode: 'GOOGLE',
             recipients: [{ name: 'Dr. —', role: 'Head of Adult Emergency', email: 'head@example.com' }, { name: '—', role: 'ED & SBEM Secretary', email: 'secretary@example.com' }, { name: 'Dr. —', role: 'SBEM Training Program Director', email: 'director@example.com' }] }
         });
       }
@@ -156,7 +156,7 @@
         audit.unshift({ at: hms(new Date()), action: 'Remove', recordId: r.recordId, by: user.email, before: r.fullName + ' · ' + r.staffId, after: '(removed)', reason: p.reason, date: r.date });
         return stamp({ removed: r.recordId, date: r.date, reportSent: false });
       }
-      case 'admin.setLocation': return stamp({ lat: p.lat, lng: p.lng, radius: p.radius || 150, accuracy: p.accuracy });
+      case 'admin.setLocation': return stamp({ lat: p.lat, lng: p.lng, radius: p.radius || 50, accuracy: p.accuracy });
       case 'admin.sendReport': return stamp({ sent: { date: p.date, to: p.toMeOnly ? [user.email] : ['head@example.com', 'secretary@example.com', 'director@example.com'], count: rows.filter(r => r.date === p.date).length } });
       case 'admin.export': {
         const list = rows.filter(r => (!p.from || r.date >= p.from) && (!p.to || r.date <= p.to));
