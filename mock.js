@@ -114,7 +114,7 @@
         const last30 = dates.slice(-30);
         const n30 = last30.reduce((a, d) => a + counts[d], 0);
         return stamp({
-          me: { email: user.email, name: user.name, role: 'manage' }, date, session: Object.assign({}, s, { date, label: label(new Date(date + 'T09:00:00Z')) }), today: s,
+          me: { email: user.email, name: user.name, role: 'manage', owner: true }, date, session: Object.assign({}, s, { date, label: label(new Date(date + 'T09:00:00Z')) }), today: s,
           records: day, byLevel, trend: last30.map(d => ({ date: d, count: counts[d] })),
           kpis: { present: day.length, sessions30: last30.length, avg30: Math.round(n30 / last30.length * 10) / 10, trainees30: NAMES.length, totalRecords: rows.length, totalSessions: dates.length },
           rejections: date === s.date ? rejections : [], report: date < s.date ? { sentAt: date + 'T07:20:12+03:00', count: day.length, trigger: 'Auto (scheduled)' } : null,

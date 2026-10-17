@@ -212,7 +212,7 @@
     <!-- System tab -->
     <section data-pane="system" hidden>
       <div class="links" id="links" style="margin-bottom:16px"></div>
-      <div class="grid">
+      <div class="grid" id="sysGrid">
         <div class="card"><div class="panel-h"><h2>Current configuration</h2><span class="muted" style="font-size:12px">Edit in the Google Sheet → Settings</span></div><div class="panel-b"><div class="kvs" id="cfg"></div></div></div>
         <div class="card"><div class="panel-h"><h2>Daily report recipients</h2></div><div class="panel-b" id="rcp"></div></div>
       </div>
@@ -317,7 +317,7 @@
       kpi('Average', k.avg30, 'per session · 30 days') +
       kpi('Trainees', k.trainees30, 'attended in 30 days') +
       kpi('Sessions', k.sessions30, 'held in 30 days') +
-      kpi('Daily report', '<span style="font-size:20px">' + esc(repTxt) + '</span>', rep && rep.trigger ? esc(rep.trigger) : 'auto ' + (S.data.settings.reportDelay) + ' min after close', '', true);
+      kpi('Daily report', '<span style="font-size:20px">' + esc(repTxt) + '</span>', rep && rep.trigger ? esc(rep.trigger) : 'automatic, after the window closes', '', true);
 
     renderRegister();
     renderLevels();
@@ -416,8 +416,12 @@
       link(base + 'poster.html', IC.qr, 'Classroom poster', 'Print-ready A4 with QR') +
       link(disp, IC.tv, 'Classroom display', 'Live screen for the projector') +
       link(d.links.archive, IC.folder, 'PDF archive', 'Every daily report in Drive') +
-      (S.role === 'manage' ? '<a class="linkcard" href="#" id="geoBtn"><div class="ic">' + IC.pin + '</div><div><b>Set classroom location</b><span>Stand in the room and tap</span></div></a>' : '');
+      link(base + 'QR-Poster.pdf', IC.qr, 'Poster PDF (reprint)', 'Download & print the official QR poster') +
+      (d.me.owner ? '<a class="linkcard" href="#" id="geoBtn"><div class="ic">' + IC.pin + '</div><div><b>Set classroom location</b><span>Stand in the room and tap</span></div></a>' : '');
     const g = $('#geoBtn'); if (g) g.onclick = e => { e.preventDefault(); setLocation(); };
+    // Configuration is visible to the system owner only.
+    $('#sysGrid').hidden = !s;
+    if (!s) return;
     const geo = s.geofence ? (s.lat !== null && s.lat !== '' ? 'On · ' + s.radius + ' m around ' + Number(s.lat).toFixed(5) + ', ' + Number(s.lng).toFixed(5) : 'On · location NOT set') : 'Off';
     $('#cfg').innerHTML = [
       ['Registration window', s.windowStart + '–' + s.windowEnd + ' (' + s.timezone + ')'],
@@ -510,7 +514,7 @@
     const m = MR.modal('Set classroom location',
       '<p class="muted" style="margin:0;font-size:13.5px">Stand in the middle of the Morning Report classroom with this phone. Wait until accuracy is under ~30 m, then save.</p>' +
       '<div class="geo-live" id="gLive">Waiting for location…</div>' +
-      '<label class="field"><span class="label">Allowed radius (metres)</span><input class="input" type="number" id="gRad" min="20" max="5000" value="' + (S.data.settings.radius || 150) + '"></label>' +
+      '<label class="field"><span class="label">Allowed radius (metres)</span><input class="input" type="number" id="gRad" min="20" max="5000" value="' + ((S.data.settings && S.data.settings.radius) || 150) + '"></label>' +
       '<p class="hint">Indoors, GPS is often ±20–60 m. 150 m covers the classroom and nearby corridors; reduce it if people register from the car park.</p>',
       [{ label: 'Cancel', onClick: c => { stop = true; c(); } }, { label: 'Save this location', cls: 'btn-primary', onClick: async (close, btn) => {
         if (!best) return MR.toast('No location yet', 'bad');
