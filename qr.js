@@ -7,8 +7,9 @@
 (function () {
   'use strict';
   function svg(text, opts) {
-    opts = Object.assign({ dark: '#062C32', eye: '#0E5F68', light: '#FFFFFF', badge: false, quiet: 4 }, opts || {});
-    const qr = qrcode(0, 'H');
+    // ECC 'M' (15% recovery): fewer, larger modules than 'H' → more reliable scanning; 'H' only needed with a centre badge.
+    opts = Object.assign({ dark: '#062C32', eye: '#0E5F68', light: '#FFFFFF', badge: false, quiet: 4, ecc: null }, opts || {});
+    const qr = qrcode(0, opts.ecc || (opts.badge ? 'H' : 'M'));
     qr.addData(text);
     qr.make();
     const n = qr.getModuleCount(), q = opts.quiet, size = n + q * 2;
