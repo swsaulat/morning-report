@@ -53,6 +53,7 @@
     NAMES.slice(2, 8).forEach((n, j) => rows.push({ date: dayKey(new Date()), time: hms(new Date(startAt.getTime() + (j + 1) * 90000)), fullName: n[0], staffId: n[2], level: n[1],
       email: 'demo' + j + '@gmail.com', method: 'QR · Google · GPS', location: 'Passed', distance: 12 + j * 9, accuracy: 10 + j, device: 'iPhone · Safari', recordId: 'MR-DEMO-' + j, notes: '' }));
   }
+  const audit = [];
   const rejections = [{ at: hms(new Date(closeAt.getTime() - 600000)), email: 'late.person@gmail.com', fullName: 'Late Person', staffId: '999111', reason: 'GEO_OUTSIDE', message: 'You appear to be about 2.4 km from the Morning Report Classroom (allowed: 150 m).', distance: 2400, accuracy: 18 }];
 
   const cfg = () => ({
@@ -117,7 +118,7 @@
           me: { email: user.email, name: user.name, role: 'manage', owner: true }, date, session: Object.assign({}, s, { date, label: label(new Date(date + 'T09:00:00Z')) }), today: s,
           records: day, byLevel, trend: last30.map(d => ({ date: d, count: counts[d] })),
           kpis: { present: day.length, sessions30: last30.length, avg30: Math.round(n30 / last30.length * 10) / 10, trainees30: NAMES.length, totalRecords: rows.length, totalSessions: dates.length },
-          rejections: date === s.date ? rejections : [], report: date < s.date ? { sentAt: date + 'T07:20:12+03:00', count: day.length, trigger: 'Auto (scheduled)' } : null,
+          rejections: date === s.date ? rejections : [], audit: audit.filter(a => a.date === date), report: date < s.date ? { sentAt: date + 'T07:20:12+03:00', count: day.length, trigger: 'Auto (scheduled)' } : null,
           levels: LEVELS, warnings: [{ level: 'info', text: 'Demo mode: data is simulated. Set API_URL in config.js to connect the real Google Sheet.' }],
           links: { sheet: '#', archive: '#', attendee: './' }, displayKey: 'DEMOKEY',
           settings: { windowStart: '06:00', windowEnd: '07:00', timezone: TZ, sessionDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu'], geofence: true, radius: 150, lat: ROOM.lat, lng: ROOM.lng, liveCode: false, reportDelay: 30, authMode: 'GOOGLE',
@@ -137,6 +138,23 @@
       case 'admin.manualAdd': {
         const rec = { date: p.date || s.date, time: (p.time || hm(new Date())) + ':00', fullName: p.fullName, staffId: p.staffId, level: p.level, email: '', method: 'Manual (by demo)', location: 'Manual entry', distance: null, accuracy: null, device: 'Admin dashboard', recordId: 'MR-MANUAL', notes: p.note || 'Added manually' };
         rows.push(rec); return stamp({ record: rec });
+      }
+      case 'admin.editRecord': {
+        const r = rows.find(x => x.recordId === p.recordId);
+        if (!r) return err('NOT_FOUND', 'That entry no longer exists.');
+        if (!p.reason || p.reason.trim().length < 3) return err('VALIDATION', 'Please give a short reason for the change.');
+        const before = r.time.slice(0, 5) + ' · ' + r.fullName + ' · ' + r.staffId + ' · ' + r.level;
+        Object.assign(r, { fullName: p.fullName, staffId: p.staffId, level: p.level, time: (p.time || r.time.slice(0, 5)) + ':00', notes: 'Edited by demo' });
+        audit.unshift({ at: hms(new Date()), action: 'Edit', recordId: r.recordId, by: user.email, before, after: r.time.slice(0, 5) + ' · ' + r.fullName + ' · ' + r.staffId + ' · ' + r.level, reason: p.reason, date: r.date });
+        return stamp({ record: r, reportSent: false });
+      }
+      case 'admin.deleteRecord': {
+        const i = rows.findIndex(x => x.recordId === p.recordId);
+        if (i < 0) return err('NOT_FOUND', 'That entry no longer exists.');
+        if (!p.reason || p.reason.trim().length < 3) return err('VALIDATION', 'Please give a short reason for the change.');
+        const r = rows.splice(i, 1)[0];
+        audit.unshift({ at: hms(new Date()), action: 'Remove', recordId: r.recordId, by: user.email, before: r.fullName + ' · ' + r.staffId, after: '(removed)', reason: p.reason, date: r.date });
+        return stamp({ removed: r.recordId, date: r.date, reportSent: false });
       }
       case 'admin.setLocation': return stamp({ lat: p.lat, lng: p.lng, radius: p.radius || 150, accuracy: p.accuracy });
       case 'admin.sendReport': return stamp({ sent: { date: p.date, to: p.toMeOnly ? [user.email] : ['head@example.com', 'secretary@example.com', 'director@example.com'], count: rows.filter(r => r.date === p.date).length } });

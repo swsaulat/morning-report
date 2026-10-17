@@ -33,6 +33,11 @@
   .iconbtn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); display: grid; place-items: center; cursor: pointer; color: var(--ink-2); }
   .iconbtn:hover { background: var(--surface-2); }
   .iconbtn svg { width: 18px; height: 18px; }
+  .iconbtn.sm { width: 30px; height: 30px; border-radius: 8px; display: inline-grid; }
+  .iconbtn.sm svg { width: 15px; height: 15px; }
+  .iconbtn.del:hover { color: var(--bad); border-color: var(--bad); }
+  .t td.acts { white-space: nowrap; text-align: right; }
+  .t td.acts .iconbtn + .iconbtn { margin-left: 4px; }
   .spacer { flex: 1; }
 
   .warns { display: grid; gap: 8px; margin-bottom: 14px; }
@@ -189,6 +194,7 @@
           <div class="card"><div class="panel-h"><h2>By training level</h2></div><div class="panel-b" id="levels"></div></div>
           <div class="card"><div class="panel-h"><h2>Attendance · last 30 sessions</h2></div><div class="panel-b"><div class="chart" id="trend"></div></div></div>
           <div class="card"><div class="panel-h"><h2>Rejected attempts</h2><span class="muted num" id="rejCount"></span></div><div class="panel-b" id="rej"></div></div>
+          <div class="card"><div class="panel-h"><h2>Change history</h2><span class="muted num" id="auditCount"></span></div><div class="panel-b" id="audit"></div></div>
         </div>
       </div>
     </section>
@@ -234,7 +240,9 @@
     tv: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
     qr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 20h1M17 20v1"/></svg>',
     folder: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
-    pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>'
+    pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>',
+    edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+    trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg>'
   };
 
   /* ---------- Auth ---------- */
@@ -322,6 +330,7 @@
     renderLevels();
     renderTrend();
     renderRej();
+    renderAudit();
     renderSystem();
     if (S.trainees === null && !$('[data-pane="trainees"]').hidden) loadTrainees();
   }
@@ -340,14 +349,63 @@
     $('#regCount').textContent = d.records.length + ' present';
     const th = (k, l, cls) => '<th data-sort="' + k + '" class="' + (cls || '') + '">' + l + (S.sort.key === k ? (S.sort.dir > 0 ? ' ↑' : ' ↓') : '') + '</th>';
     if (!d.records.length) { $('#regTable').innerHTML = '<tr><td class="empty">' + (d.session.isSessionDay ? 'No registrations yet for this session.' : 'No session on this date.') + '</td></tr>'; return; }
-    $('#regTable').innerHTML = '<thead><tr><th>#</th>' + th('time', 'Time') + th('fullName', 'Name') + th('staffId', 'Staff ID') + th('level', 'Level') + th('location', 'Verification', 'hide-sm') + '</tr></thead><tbody>' +
+    const canEdit = S.role === 'manage';
+    $('#regTable').innerHTML = '<thead><tr><th>#</th>' + th('time', 'Time') + th('fullName', 'Name') + th('staffId', 'Staff ID') + th('level', 'Level') + th('location', 'Verification', 'hide-sm') + (canEdit ? '<th></th>' : '') + '</tr></thead><tbody>' +
       rows.map((r, i) => {
         const manual = /^Manual/.test(r.method);
+        const edited = /Edited by/.test(r.notes || '');
         const ver = manual ? '<span class="pill pill-warn">Manual</span>' : r.location === 'Passed' ? '<span class="pill pill-ok">GPS · ' + (r.distance ?? '?') + ' m</span>' : '<span class="pill pill-info">' + esc(r.location || 'Google') + '</span>';
+        const acts = canEdit ? '<td class="acts"><button class="iconbtn sm" data-edit="' + esc(r.recordId) + '" title="Correct this entry" aria-label="Correct entry">' + IC.edit + '</button>' +
+          '<button class="iconbtn sm del" data-del="' + esc(r.recordId) + '" title="Remove this entry" aria-label="Remove entry">' + IC.trash + '</button></td>' : '';
         return '<tr title="' + esc((r.email || '') + (r.device ? ' · ' + r.device : '') + (r.notes ? ' · ' + r.notes : '') + ' · ' + r.recordId) + '"><td class="muted num">' + (i + 1) + '</td><td class="num">' + esc(String(r.time).slice(0, 5)) + '</td>' +
-          '<td><div class="nm">' + esc(r.fullName) + '</div><div class="sub">' + esc(r.email || '') + '</div></td><td class="num">' + esc(r.staffId) + '</td><td>' + esc(r.level) + '</td><td class="hide-sm">' + ver + '</td></tr>';
+          '<td><div class="nm">' + esc(r.fullName) + (edited ? ' <span class="pill pill-mute" style="padding:0 6px;font-size:10.5px">edited</span>' : '') + '</div><div class="sub">' + esc(r.email || '') + '</div></td><td class="num">' + esc(r.staffId) + '</td><td>' + esc(r.level) + '</td><td class="hide-sm">' + ver + '</td>' + acts + '</tr>';
       }).join('') + '</tbody>';
     $$('#regTable th[data-sort]').forEach(h => h.onclick = () => { const k = h.dataset.sort; S.sort = { key: k, dir: S.sort.key === k ? -S.sort.dir : 1 }; renderRegister(); });
+    $$('#regTable [data-edit]').forEach(b => b.onclick = () => editEntry(d.records.find(r => r.recordId === b.dataset.edit)));
+    $$('#regTable [data-del]').forEach(b => b.onclick = () => removeEntry(d.records.find(r => r.recordId === b.dataset.del)));
+  }
+
+  function editEntry(r) {
+    if (!r) return;
+    const levels = S.data.levels.map(l => '<option' + (l === r.level ? ' selected' : '') + '>' + esc(l) + '</option>').join('');
+    MR.modal('Correct entry',
+      '<p class="muted" style="margin:0 0 12px;font-size:13.5px">' + esc(shortDate(r.date)) + ' · ref ' + esc(r.recordId) + '. The change and your reason are recorded in the audit log.</p>' +
+      '<label class="field"><span class="label">Full name</span><input class="input" id="eName" value="' + esc(r.fullName) + '"></label>' +
+      '<label class="field"><span class="label">' + esc(S.cfgPublic.staffIdLabel) + '</span><input class="input" id="eId" value="' + esc(r.staffId) + '"></label>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px"><label class="field" style="margin:0"><span class="label">Training level</span><select class="input" id="eLevel">' + levels + '</select></label>' +
+      '<label class="field" style="margin:0"><span class="label">Time</span><input class="input" type="time" id="eTime" value="' + esc(String(r.time).slice(0, 5)) + '"></label></div>' +
+      '<label class="field"><span class="label">Reason for the correction</span><input class="input" id="eReason" placeholder="e.g. trainee typed wrong ID"></label>',
+      [{ label: 'Cancel' }, { label: 'Save correction', cls: 'btn-primary', onClick: async (close, btn) => {
+        MR.busy(btn, true, 'Saving…');
+        const res = await call('admin.editRecord', Object.assign({ recordId: r.recordId, fullName: $('#eName').value, staffId: $('#eId').value, level: $('#eLevel').value, time: $('#eTime').value, reason: $('#eReason').value }, Auth.payload()));
+        MR.busy(btn, false);
+        if (!res.ok) return MR.toast(res.message, 'bad', 6000);
+        close(); MR.toast('Entry corrected' + (res.reportSent ? '. The report for this date was already sent; use Email report to resend.' : ''), 'ok', 6000); load(true);
+      } }]);
+  }
+
+  function removeEntry(r) {
+    if (!r) return;
+    MR.modal('Remove entry',
+      '<div class="notice notice-warn" style="margin-bottom:12px">Remove <b>' + esc(r.fullName) + '</b> (' + esc(r.staffId) + ') from ' + esc(shortDate(r.date)) + ' at ' + esc(String(r.time).slice(0, 5)) + '? The full entry is kept in the audit log.</div>' +
+      '<label class="field"><span class="label">Reason for removal</span><input class="input" id="dReason" placeholder="e.g. registered by mistake / not present"></label>',
+      [{ label: 'Cancel' }, { label: 'Remove entry', cls: 'btn-danger', onClick: async (close, btn) => {
+        MR.busy(btn, true, 'Removing…');
+        const res = await call('admin.deleteRecord', Object.assign({ recordId: r.recordId, reason: $('#dReason').value }, Auth.payload()));
+        MR.busy(btn, false);
+        if (!res.ok) return MR.toast(res.message, 'bad', 6000);
+        close(); MR.toast('Entry removed' + (res.reportSent ? '. The report for this date was already sent; use Email report to resend.' : ''), 'ok', 6000); load(true);
+      } }]);
+  }
+
+  function renderAudit() {
+    const a = S.data.audit || [];
+    $('#auditCount').textContent = a.length ? a.length : '';
+    const tone = { 'Edit': 'pill-info', 'Remove': 'pill-bad', 'Manual add': 'pill-warn' };
+    $('#audit').innerHTML = a.length ? a.slice(0, 40).map(x => '<div class="rej"><div class="r1"><span><span class="pill ' + (tone[x.action] || 'pill-mute') + '" style="padding:1px 7px;font-size:11px">' + esc(x.action) + '</span> ' + esc(x.by) + '</span><span class="muted num" style="font-weight:500">' + esc(String(x.at).slice(-8, -3)) + '</span></div>' +
+      (x.before ? '<div class="r2"><b>Before:</b> ' + esc(String(x.before).slice(0, 160)) + '</div>' : '') +
+      (x.after ? '<div class="r2"><b>After:</b> ' + esc(x.after) + '</div>' : '') +
+      '<div class="r2"><b>Reason:</b> ' + esc(x.reason) + '</div></div>').join('') : '<div class="muted" style="font-size:13px">No corrections on this date.</div>';
   }
 
   function renderLevels() {
