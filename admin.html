@@ -474,6 +474,7 @@
       link(disp, IC.tv, 'Classroom display', 'Live screen for the projector') +
       link(d.links.archive, IC.folder, 'PDF archive', 'Every daily report in Drive') +
       link(base + 'QR-Poster.pdf', IC.qr, 'Poster PDF (reprint)', 'Download & print the official QR poster') +
+      link(base + 'Attendance-System-Guide.pdf', IC.folder, 'How-to guide (PDF)', 'For recipients & managers') +
       (d.me.owner ? '<a class="linkcard" href="#" id="geoBtn"><div class="ic">' + IC.pin + '</div><div><b>Set classroom location</b><span>Stand in the room and tap</span></div></a>' : '');
     const g = $('#geoBtn'); if (g) g.onclick = e => { e.preventDefault(); setLocation(); };
     // Configuration is visible to the system owner only.

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide · Morning Report Attendance</title>
+<meta name="author" content="Dr. Swaid Saulat">
+<meta name="robots" content="noindex">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --teal: #1F9AA3; --teal-d: #0E5F68; --gold: #BF9D68; --ink: #0F2A37; --ink2: #3B5563; --mute: #6B808C; --line: #E1E9ED; --soft: #F3F8F9; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #DDE5E9; font-family: 'Inter', Arial, sans-serif; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page { width: 210mm; min-height: 297mm; margin: 10mm auto; background: #fff; padding: 11mm 15mm 10mm; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,.15); display: flex; flex-direction: column; }
+  .head { display: flex; align-items: center; gap: 6mm; padding-bottom: 5mm; border-bottom: 1.2mm solid var(--gold); }
+  .head img { height: 22mm; }
+  .head .t1 { font-size: 3.2mm; letter-spacing: .25em; text-transform: uppercase; color: var(--teal-d); font-weight: 700; }
+  .head .t2 { font-size: 8mm; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; margin-top: 1mm; }
+  .head .t3 { font-size: 3.6mm; color: var(--mute); margin-top: 1mm; }
+  h2 { font-size: 4.8mm; margin: 5mm 0 2mm; color: var(--teal-d); display: flex; align-items: center; gap: 2.5mm; }
+  h2 .n { width: 7mm; height: 7mm; border-radius: 2mm; background: var(--teal-d); color: #fff; font-size: 3.6mm; display: grid; place-items: center; flex: none; }
+  p, li { font-size: 3.45mm; line-height: 1.5; color: var(--ink2); margin: 0; }
+  ul, ol { margin: 1.5mm 0 0; padding-left: 5.5mm; }
+  li + li { margin-top: 1mm; }
+  b { color: var(--ink); }
+  .box { background: var(--soft); border: .3mm solid var(--line); border-radius: 3mm; padding: 3.5mm 4mm; margin-top: 2.5mm; }
+  .link { font-family: 'Inter', monospace; font-weight: 700; color: var(--teal-d); word-break: break-all; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  table { width: 100%; border-collapse: collapse; margin-top: 2.5mm; font-size: 3.3mm; }
+  th, td { border: .3mm solid var(--line); padding: 2mm 2.5mm; text-align: left; vertical-align: top; }
+  th { background: var(--soft); color: var(--ink); font-weight: 700; }
+  td.y { color: #12805C; font-weight: 700; text-align: center; } td.x { color: #B42318; text-align: center; }
+  .tip { border-left: 1.2mm solid var(--gold); background: #FBF7EF; padding: 2.5mm 3.5mm; border-radius: 0 2mm 2mm 0; margin-top: 2.5mm; }
+  .foot { margin-top: auto; padding-top: 4mm; border-top: .3mm solid var(--line); display: flex; justify-content: space-between; font-size: 2.9mm; color: var(--mute); }
+  .bar { position: sticky; top: 0; z-index: 2; background: #0F2A37; color: #fff; padding: 10px 16px; display: flex; gap: 12px; align-items: center; font-size: 13px; }
+  .bar button { padding: 8px 14px; border-radius: 8px; border: 0; background: var(--gold); color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+  @page { size: A4 portrait; margin: 0; }
+  @media print { html, body { background: #fff; } .bar { display: none; } .page { margin: 0; box-shadow: none; page-break-after: always; min-height: 296mm; } .page:last-child { page-break-after: auto; } }
+</style>
+</head>
+<body>
+<div class="bar"><b>Guide</b><span style="opacity:.75">Morning Report Attendance · for recipients and managers</span><span style="flex:1"></span><button onclick="window.print()">Print / Save as PDF</button></div>
+
+<section class="page">
+  <div class="head">
+    <img src="logo.jpg" alt="Security Forces Hospital – Riyadh">
+    <div>
+      <div class="t1">Adult Emergency Department</div>
+      <div class="t2">Morning Report Attendance<br>Guide for Recipients &amp; Managers</div>
+      <div class="t3">How to view attendance, receive reports, correct entries and reprint the QR poster</div>
+    </div>
+  </div>
+
+  <h2><span class="n">1</span>What you receive automatically</h2>
+  <ul>
+    <li><b>Daily report (PDF)</b> by email at about <b>07:30</b> on every session day (Sunday–Thursday): names, IDs, training levels, registration times and total attendance.</li>
+    <li><b>Monthly summary (PDF)</b> on the <b>1st of each month</b>, and a <b>yearly summary</b> on <b>1 January</b>: sessions held, attendance per session and each trainee's attendance rate.</li>
+    <li>All PDFs are also kept in the shared Google Drive folder <b>“Morning Report Attendance – PDF Archive”</b> (Drive → <b>Shared with me</b>).</li>
+    <li>A read-only Google Sheet <b>“… Attendance Register (read-only)”</b> with every registration, refreshed every 10 minutes (Drive → Shared with me). Its first tab, <b>Start Here</b>, has all the links in this guide.</li>
+  </ul>
+
+  <h2><span class="n">2</span>Open the dashboard</h2>
+  <div class="box">
+    <p>Dashboard: <span class="link" data-u="admin.html">swsaulat.github.io/sfh-morning-report/admin.html</span></p>
+  </div>
+  <ol>
+    <li>Open the link on your phone or computer and tap <b>Continue with Google</b>.</li>
+    <li>Choose the Google account that is registered as a recipient (the one that receives the reports).</li>
+    <li>You will see <b>today's attendance live</b>, the 30-session trend, attendance by training level, rejected attempts and the change history. Use the date arrows to look at any previous day.</li>
+    <li><b>Trainee attendance</b> tab: each trainee's attendance rate for the last 30 days to 12 months. <b>Export CSV</b> downloads the data.</li>
+  </ol>
+
+  <h2><span class="n">3</span>Who can do what</h2>
+  <table>
+    <tr><th>Task</th><th style="width:22%">View access</th><th style="width:22%">Manage access</th></tr>
+    <tr><td>See attendance, trends, history; export CSV</td><td class="y">✓</td><td class="y">✓</td></tr>
+    <tr><td>Receive all PDF reports; open the read-only register and PDF archive</td><td class="y">✓</td><td class="y">✓</td></tr>
+    <tr><td>Download and reprint the QR poster</td><td class="y">✓</td><td class="y">✓</td></tr>
+    <tr><td>Add a missed attendance, correct or remove an entry</td><td class="x">–</td><td class="y">✓</td></tr>
+    <tr><td>Email the report to all recipients</td><td class="x">–</td><td class="y">✓</td></tr>
+    <tr><td>Settings, recipients, session times, classroom location</td><td colspan="2" style="text-align:center">System owner only (Dr. Swaid Saulat)</td></tr>
+  </table>
+
+  <div class="foot"><span>Morning Report Attendance System · Adult Emergency Department, Security Forces Hospital – Riyadh</span><span>Page 1 of 2</span></div>
+</section>
+
+<section class="page">
+  <div class="head" style="padding-bottom:3mm">
+    <img src="logo.jpg" alt="" style="height:14mm">
+    <div><div class="t1">Morning Report Attendance</div><div class="t2" style="font-size:6mm">For managers · Reprinting the QR · Help</div></div>
+  </div>
+
+  <h2><span class="n">4</span>Correcting attendance (Manage access)</h2>
+  <ul>
+    <li><b>Someone attended but could not register</b> (phone problem, no GPS): Dashboard → <b>+ Manual entry</b> → date, time, name, ID, level, note → <b>Add entry</b>. It is marked <i>Manual</i> in the register and report.</li>
+    <li><b>Wrong name, ID, level or time:</b> in the register, tap <b>✎</b> on that row, fix it, write a short reason, <b>Save correction</b>.</li>
+    <li><b>Entry that should not be there</b> (registered by mistake): tap <b>🗑</b>, write the reason, <b>Remove entry</b>.</li>
+    <li><b>Resend a report</b> after a correction: <b>Email report ▾ → Send to all recipients</b> (or <i>Send a copy to me</i>).</li>
+  </ul>
+  <div class="tip"><p>Every correction or removal is recorded with <b>who</b> made it, <b>when</b>, <b>before → after</b> and the <b>reason</b>. You can see it in the dashboard under <b>Change history</b>. Removed entries are kept in the audit record and can be restored by the system owner.</p></div>
+
+  <h2><span class="n">5</span>QR code poster: download &amp; reprint</h2>
+  <p>If the poster in the classroom is lost, damaged or removed, anyone on the recipient list can print a new one. <b>The QR code never changes</b>, so an old copy keeps working.</p>
+  <div class="grid2">
+    <div class="box"><p><b>Direct PDF (A4)</b><br><span class="link" data-u="QR-Poster.pdf">swsaulat.github.io/sfh-morning-report/QR-Poster.pdf</span></p></div>
+    <div class="box"><p><b>Other places</b><br>Read-only register → <b>Start Here</b> tab · Drive PDF Archive → <b>Printables</b> · Dashboard → <b>System &amp; links</b></p></div>
+  </div>
+  <p style="margin-top:2mm">Print on <b>A4, scale 100%</b> (or A3 “fit to page” for a larger poster). Place it at eye level near the classroom entrance.</p>
+
+  <h2><span class="n">6</span>How attendees register (for reference)</h2>
+  <ol>
+    <li>Scan the QR with the phone camera between <b>06:00 and 07:00</b> (Riyadh time).</li>
+    <li>Sign in with any Google account, enter full name, Staff ID and training level.</li>
+    <li>Allow location: the phone must be <b>in the classroom area</b>. One registration per person per session; late or remote attempts are refused and listed under <i>Rejected attempts</i>.</li>
+  </ol>
+
+  <h2><span class="n">7</span>Help</h2>
+  <ul>
+    <li><b>“No dashboard access”:</b> you are signed in with a different Google account. Tap <b>Sign out</b> and choose the account that receives the reports.</li>
+    <li><b>A trainee says “ID linked to another account”:</b> they used a different Google account before. Add their attendance manually and tell the system owner.</li>
+    <li><b>Changes to times, recipients, settings or classroom location:</b> contact the system owner, <b>Dr. Swaid Saulat</b> (swsaulat@gmail.com).</li>
+  </ul>
+
+  <div class="foot"><span>Developed by Dr. Swaid Saulat · Patient Flow Management System, powered by Ruqelo</span><span>Page 2 of 2</span></div>
+</section>
+<script>
+  // Show this site's own address so the guide stays correct if the site moves to a new domain.
+  (function () { var base = new URL('./', location.href).href.replace(/^https?:\/\//, ''); if (/^(localhost|127\.)/.test(base)) return;
+    document.querySelectorAll('[data-u]').forEach(function (el) { el.textContent = base + el.getAttribute('data-u'); }); })();
+</script>
+</body>
+</html>
