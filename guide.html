@@ -64,7 +64,7 @@
 
   <h2><span class="n">2</span>Open the dashboard</h2>
   <div class="box">
-    <p>Dashboard: <span class="link" data-u="admin.html">swsaulat.github.io/sfh-morning-report/admin.html</span></p>
+    <p>Dashboard: <span class="link" data-u="admin.html">sfh.patientflowms.com/admin.html</span></p>
   </div>
   <ol>
     <li>Open the link on your phone or computer and tap <b>Continue with Google</b>.</li>
@@ -105,7 +105,7 @@
   <h2><span class="n">5</span>QR code poster: download &amp; reprint</h2>
   <p>If the poster in the classroom is lost, damaged or removed, anyone on the recipient list can print a new one. <b>The QR code never changes</b>, so an old copy keeps working.</p>
   <div class="grid2">
-    <div class="box"><p><b>Direct PDF (A4)</b><br><span class="link" data-u="QR-Poster.pdf">swsaulat.github.io/sfh-morning-report/QR-Poster.pdf</span></p></div>
+    <div class="box"><p><b>Direct PDF (A4)</b><br><span class="link" data-u="QR-Poster.pdf">sfh.patientflowms.com/QR-Poster.pdf</span></p></div>
     <div class="box"><p><b>Other places</b><br>Read-only register → <b>Start Here</b> tab · Drive PDF Archive → <b>Printables</b> · Dashboard → <b>System &amp; links</b></p></div>
   </div>
   <p style="margin-top:2mm">Print on <b>A4, scale 100%</b> (or A3 “fit to page” for a larger poster). Place it at eye level near the classroom entrance.</p>
@@ -126,9 +126,10 @@
 
   <div class="foot"><span>Developed by Dr. Swaid Saulat · Patient Flow Management System, powered by Ruqelo</span><span>Page 2 of 2</span></div>
 </section>
+<script src="config.js"></script>
 <script>
   // Show this site's own address so the guide stays correct if the site moves to a new domain.
-  (function () { var base = new URL('./', location.href).href.replace(/^https?:\/\//, ''); if (/^(localhost|127\.)/.test(base)) return;
+  (function () { var cfg = (window.MR_CONFIG && window.MR_CONFIG.ATTENDEE_URL) || ''; var base = (cfg || new URL('./', location.href).href).replace(/^https?:\/\//, ''); if (!cfg && /^(localhost|127\.)/.test(base)) return;
     document.querySelectorAll('[data-u]').forEach(function (el) { el.textContent = base + el.getAttribute('data-u'); }); })();
 </script>
 </body>

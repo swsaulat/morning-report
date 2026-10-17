@@ -11,5 +11,5 @@ window.MR_CONFIG = {
 
   // Public URL of the attendee page (the QR code target).
   // Leave blank to use this site's own address automatically.
-  ATTENDEE_URL: ''
+  ATTENDEE_URL: 'https://sfh.patientflowms.com/'
 };
