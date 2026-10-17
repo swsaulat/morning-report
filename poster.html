@@ -25,8 +25,8 @@
   .poster { width: 210mm; height: 297mm; background: #fff; position: relative; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.18); display: flex; flex-direction: column; flex: none; }
   .head { background: linear-gradient(150deg, #13838C 0%, #0E5F68 50%, #08414A 100%); color: #fff; padding: 7mm 14mm 6mm; position: relative; text-align: center; }
   .head::after { content: ''; position: absolute; right: -30mm; top: -30mm; width: 90mm; height: 90mm; border-radius: 50%; background: radial-gradient(circle, rgba(191,157,104,.35), transparent 65%); }
-  .logo-plate { display: inline-block; background: #fff; border-radius: 5mm; padding: 3.5mm 6mm; box-shadow: 0 2mm 6mm rgba(0,0,0,.15); position: relative; z-index: 1; }
-  .logo-plate img { height: 27mm; display: block; }
+  .logo-plate { display: inline-block; border-radius: 6mm; line-height: 0; box-shadow: 0 0 0 .8mm rgba(255,255,255,.35), 0 2mm 7mm rgba(0,0,0,.3); position: relative; z-index: 1; }
+  .logo-plate img { height: 26mm; width: 26mm; display: block; border-radius: 6mm; }
   .eyebrow { margin-top: 4mm; font-size: 3.9mm; letter-spacing: .2em; text-transform: uppercase; font-weight: 700; color: #BFE6E9; position: relative; z-index: 1; }
   .title { font-size: 13.5mm; line-height: 1; font-weight: 900; letter-spacing: -.03em; margin-top: 2.5mm; position: relative; z-index: 1; }
   .rule { width: 22mm; height: 1.4mm; border-radius: 1mm; background: var(--gold); margin: 4mm auto 0; }
@@ -90,7 +90,7 @@
 <div class="stage">
   <article class="poster" id="poster">
     <header class="head">
-      <div class="logo-plate"><img src="logo.jpg" alt="Security Forces Hospital – Riyadh"></div>
+      <div class="logo-plate"><img src="logo.svg" alt="Morning Report"></div>
       <div class="eyebrow" contenteditable data-k="eyebrow">Adult Emergency Unit – Emergency Department</div>
       <div class="title" contenteditable data-k="title">Morning Report</div>
       <div class="rule"></div>
@@ -123,7 +123,7 @@
 
     <footer class="foot">
       <div class="thanks" contenteditable data-k="thanks">Thank you for your participation</div>
-      <div class="inst"><span contenteditable data-k="inst">Adult Emergency Unit – Emergency Department<br>Security Forces Hospital – Riyadh</span></div>
+      <div class="inst"><span contenteditable data-k="inst">Adult Emergency Unit – Emergency Department<br>Morning Report Attendance</span></div>
     </footer>
   </article>
 </div>
@@ -172,7 +172,7 @@
     set('i2d', c.geofence.enabled ? 'Location verified by GPS' : 'Please register in person');
     set('eyebrow', MR.esc(c.department));
     set('title', MR.esc(c.program));
-    set('inst', MR.esc(c.department) + '<br>' + MR.esc(c.institution));
+    set('inst', MR.esc(c.department) + '<br>' + MR.esc(c.program) + ' Attendance');
   });
 })();
 </script>

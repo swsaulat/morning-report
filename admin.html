@@ -18,7 +18,7 @@
   .brandbar-in .title small { display: block; font-weight: 500; color: var(--mute); font-size: 12px; }
   .me { display: flex; align-items: center; gap: 10px; margin-left: auto; font-size: 13px; }
   .me .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--teal-soft); color: var(--teal-d); display: grid; place-items: center; font-weight: 800; font-size: 13px; }
-  @media (max-width: 640px) { .me .who-txt, .brandbar-in .title small { display: none; } .brand-logo { height: 40px; } }
+  @media (max-width: 640px) { .me .who-txt, .brandbar-in .title small { display: none; } .brand-logo { height: 40px; width: 40px; } }
 
   .gate { max-width: 420px; margin: 8vh auto 0; text-align: center; padding: 32px 28px; }
   .gate h1 { margin: 10px 0 6px; font-size: 22px; letter-spacing: -.02em; }
@@ -123,7 +123,7 @@
 <body>
 <header class="brandbar">
   <div class="brandbar-in">
-    <img class="brand-logo" src="logo.jpg" alt="Security Forces Hospital – Riyadh">
+    <img class="brand-logo" src="logo.svg" alt="Morning Report">
     <div class="title">Attendance Admin<small id="sub">Adult Emergency Unit – Emergency Department · Morning Report</small></div>
     <div class="me" id="me" hidden></div>
   </div>

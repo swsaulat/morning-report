@@ -58,7 +58,7 @@
 
   const cfg = () => ({
     ok: true, app: { name: 'Morning Report Attendance', version: '1.0.0 (demo)' },
-    institution: 'Security Forces Hospital – Riyadh', department: 'Adult Emergency Unit – Emergency Department', program: 'Morning Report',
+    institution: '', department: 'Adult Emergency Unit – Emergency Department', program: 'Morning Report',
     classroomName: 'Morning Report Classroom', timezone: TZ, session: session(), nextSession: session().state === 'open' || session().state === 'upcoming' ? null : tomorrow(),
     geofence: scenario === 'nogeo' ? { enabled: false } : { enabled: true, lat: ROOM.lat, lng: ROOM.lng, radius: 50, buffer: 50, maxAccuracy: 300 },
     requireLiveCode: false, staffIdLabel: 'Staff / Badge ID', staffIdPattern: '^[A-Za-z0-9-]{3,20}$', levels: LEVELS, authMode: 'GOOGLE', googleClientId: 'demo',
@@ -101,7 +101,7 @@
       }
       case 'display': {
         const today = rows.filter(r => r.date === s.date);
-        return stamp({ institution: 'Security Forces Hospital – Riyadh', department: 'Adult Emergency Unit – Emergency Department', program: 'Morning Report', classroomName: 'Morning Report Classroom',
+        return stamp({ institution: '', department: 'Adult Emergency Unit – Emergency Department', program: 'Morning Report', classroomName: 'Morning Report Classroom',
           session: s, nextSession: s.state === 'closed' || s.state === 'none' ? tomorrow() : null, count: today.length, liveCode: qs.has('live') ? 'demo' + Math.floor(Date.now() / 30000).toString(36) : null,
           codeRefreshSec: 30, attendeeUrl: '', geofence: true, radius: 50,
           recent: today.slice(-8).reverse().map(r => ({ name: r.fullName.split(' ')[0] + ' ' + r.fullName.split(' ').slice(-1)[0][0] + '.', level: r.level, time: r.time.slice(0, 5) })) });

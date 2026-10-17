@@ -20,7 +20,7 @@
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body { background: radial-gradient(1200px 500px at 50% -200px, #0F3A42 0%, transparent 70%), var(--bg); } }
   .shell { max-width: 520px; margin: 0 auto; padding: 0 14px calc(28px + env(safe-area-inset-bottom)); }
   .top { display: flex; align-items: center; justify-content: space-between; padding: 14px 4px 12px; }
-  .top .logo { height: 64px; width: auto; border-radius: 10px; background: #fff; padding: 3px; }
+  .top .logo { height: 56px; width: 56px; border-radius: 14px; box-shadow: 0 4px 14px rgba(8,65,74,.25); }
   .clock { font-weight: 700; font-size: 13px; color: var(--ink-2); background: var(--surface); border: 1px solid var(--line); padding: 6px 10px; border-radius: 999px; }
 
   .hero {
@@ -113,7 +113,7 @@
 <body>
 <div class="shell">
   <div class="top">
-    <img class="logo" src="logo.jpg" alt="Security Forces Hospital – Riyadh">
+    <img class="logo" src="logo.svg" alt="Morning Report">
     <span class="clock num" id="clock" aria-label="Current time">--:--</span>
   </div>
 
@@ -191,7 +191,7 @@
   <section id="result" hidden></section>
 
   <footer>
-    <div id="footInst">Security Forces Hospital – Riyadh</div>
+    <div id="footInst">Adult Emergency Unit – Emergency Department</div>
     <div>Morning Report Attendance System</div>
     <div class="credit">Patient Flow Management System · powered by Ruqelo<br>
       <a href="https://patientflowms.com" target="_blank" rel="noopener">patientflowms.com</a><span class="sep">·</span><a href="https://ruqelo.com" target="_blank" rel="noopener">ruqelo.com</a></div>
@@ -240,8 +240,8 @@
     const c = S.cfg;
     $('#dept').textContent = c.department;
     $('#program').textContent = c.program;
-    $('#footInst').textContent = c.department + ' · ' + c.institution;
-    document.title = c.program + ' Attendance · ' + c.institution;
+    $('#footInst').textContent = c.department;
+    document.title = c.program + ' Attendance';
     $('#dateLine').textContent = 'Attendance · ' + c.session.label;
     $('#idLabel').textContent = c.staffIdLabel;
     $('#testBanner').hidden = c.authMode !== 'TEST';

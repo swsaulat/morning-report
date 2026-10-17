@@ -124,7 +124,7 @@ a { color: var(--teal-d); }
 /* ---------- Brand bar ---------- */
 .brandbar { background: var(--surface); border-bottom: 1px solid var(--line); }
 .brandbar-in { max-width: 1180px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; gap: 14px; }
-.brand-logo { height: 52px; width: auto; border-radius: 8px; background: #fff; }
+.brand-logo { height: 48px; width: 48px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.2); }
 .dark-logo { display: none; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .light-logo { display: none; } :root:not([data-theme="light"]) .dark-logo { display: block; } }
 :root[data-theme="dark"] .light-logo { display: none; }

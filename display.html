@@ -23,7 +23,7 @@
   .demo-ribbon { position: fixed; top: 10px; right: -34px; transform: rotate(45deg); background: var(--gold); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .1em; padding: 4px 40px; }
   .screen { height: 100vh; display: grid; grid-template-rows: auto 1fr auto; padding: 3.2vh 4vw; gap: 2.5vh; }
   .top { display: flex; align-items: center; gap: 2vw; }
-  .plate { background: #fff; border-radius: 1.4vh; padding: 1vh 1.6vh; }
+  .plate { border-radius: 2.4vh; overflow: hidden; line-height: 0; box-shadow: 0 1vh 3vh rgba(0,0,0,.3); }
   .plate img { height: 10vh; display: block; }
   .top .dept { font-size: 1.8vh; letter-spacing: .3em; text-transform: uppercase; color: #A9E0E4; font-weight: 700; }
   .top .inst { font-size: 1.7vh; color: #CFE6E8; margin-top: .4vh; }
@@ -75,8 +75,8 @@
 <body>
 <div class="screen" id="screen" hidden>
   <div class="top">
-    <div class="plate"><img src="logo.jpg" alt="Security Forces Hospital – Riyadh"></div>
-    <div><div class="dept" id="dept">Adult Emergency Unit – Emergency Department</div><div class="inst" id="inst">Security Forces Hospital – Riyadh</div></div>
+    <div class="plate"><img src="logo.svg" alt="Morning Report"></div>
+    <div><div class="dept" id="dept">Adult Emergency Unit – Emergency Department</div><div class="inst" id="inst">Morning Report Attendance</div></div>
     <div class="clock" id="clock">--:--</div>
   </div>
   <div class="main">
@@ -138,7 +138,7 @@
     const prev = D ? D.count : null;
     D = res;
     $('#gate').hidden = true; $('#screen').hidden = false;
-    $('#dept').textContent = D.department; $('#inst').textContent = D.institution; $('#program').textContent = D.program;
+    $('#dept').textContent = D.department; $('#inst').textContent = D.program + ' Attendance'; $('#program').textContent = D.program;
     $('#date').textContent = D.session.label;
     $('#count').textContent = D.count;
     if (prev !== null && D.count > prev) { $('#count').animate([{ transform: 'scale(1.2)' }, { transform: 'scale(1)' }], { duration: 400 }); }

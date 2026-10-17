@@ -1,12 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#1FA3AC"/>
-      <stop offset="1" stop-color="#08414A"/>
+    <linearGradient id="mrBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#169AA3"/><stop offset=".55" stop-color="#0E5F68"/><stop offset="1" stop-color="#06343B"/>
     </linearGradient>
+    <linearGradient id="mrSun" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F6DC9C"/><stop offset="1" stop-color="#C8964A"/>
+    </linearGradient>
+    <radialGradient id="mrGlow" cx=".5" cy=".57" r=".5">
+      <stop offset="0" stop-color="#F6DC9C" stop-opacity=".35"/><stop offset="1" stop-color="#F6DC9C" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="mrAbove"><rect x="0" y="0" width="512" height="292"/></clipPath>
   </defs>
-  <rect width="192" height="192" rx="42" fill="url(#g)"/>
-  <rect x="52" y="40" width="88" height="112" rx="14" fill="#fff" fill-opacity=".14" stroke="#fff" stroke-width="8"/>
-  <rect x="74" y="30" width="44" height="22" rx="8" fill="#BF9D68"/>
-  <path d="M72 100l17 17 33-35" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect width="512" height="512" rx="116" fill="url(#mrBg)"/>
+  <rect x="9" y="9" width="494" height="494" rx="108" fill="none" stroke="#FFFFFF" stroke-opacity=".14" stroke-width="3"/>
+  <circle cx="256" cy="292" r="220" fill="url(#mrGlow)" clip-path="url(#mrAbove)"/>
+  <g stroke="url(#mrSun)" stroke-width="15" stroke-linecap="round"><line x1="130.5" y1="251.2" x2="98.1" y2="240.7"/><line x1="156.4" y1="205.4" x2="130.7" y2="183.1"/><line x1="198.1" y1="173.4" x2="183.2" y2="142.8"/><line x1="256.0" y1="160.0" x2="256.0" y2="126.0"/><line x1="313.9" y1="173.4" x2="328.8" y2="142.8"/><line x1="355.6" y1="205.4" x2="381.3" y2="183.1"/><line x1="381.5" y1="251.2" x2="413.9" y2="240.7"/></g>
+  <circle cx="256" cy="292" r="104" fill="url(#mrSun)" clip-path="url(#mrAbove)"/>
+  <path d="M78 292 H190 L212 292 L232 236 L258 352 L282 258 L298 292 H434" fill="none" stroke="#FFFFFF" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/>
+  <g stroke="#FFFFFF" stroke-linecap="round" stroke-width="15">
+    <line x1="150" y1="384" x2="362" y2="384" stroke-opacity=".55"/>
+    <line x1="196" y1="424" x2="316" y2="424" stroke-opacity=".32"/>
+  </g>
 </svg>
