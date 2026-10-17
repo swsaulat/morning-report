@@ -30,9 +30,9 @@
   const tomorrow = () => { const t = new Date(Date.now() + 86400000); return { date: dayKey(t), label: label(t), start: '06:00', end: '06:45', state: 'upcoming', isSessionDay: true }; };
 
   // Demo history
-  const NAMES = [['John Doe', 'R1 (PGY-1)', '123456'], ['Sara Ahmed', 'R1 (PGY-1)', '234567'], ['Khalid Al-Hassan', 'R2 (PGY-2)', '345678'], ['Fatima Al-Rashid', 'R2 (PGY-2)', '456789'],
-    ['Ahmed Saleh', 'R3 (PGY-3)', '567890'], ['Lama Faris', 'R3 (PGY-3)', '678901'], ['Omar Khalid', 'R1 (PGY-1)', '789012'], ['Razan Al-Qahtani', 'R4 (PGY-4)', '890123'],
-    ['Yousef Al-Harbi', 'Intern', '901234'], ['Noura Al-Otaibi', 'R4 (PGY-4)', '112233'], ['Faisal Al-Dosari', 'Fellow', '223344'], ['Reem Al-Shehri', 'Intern', '334455']];
+  const NAMES = [['Trainee 01', 'R1 (PGY-1)', '123456'], ['Trainee 02', 'R1 (PGY-1)', '234567'], ['Trainee 03', 'R2 (PGY-2)', '345678'], ['Trainee 04', 'R2 (PGY-2)', '456789'],
+    ['Trainee 05', 'R3 (PGY-3)', '567890'], ['Trainee 06', 'R3 (PGY-3)', '678901'], ['Trainee 07', 'R1 (PGY-1)', '789012'], ['Trainee 08', 'R4 (PGY-4)', '890123'],
+    ['Trainee 09', 'Intern', '901234'], ['Trainee 10', 'R4 (PGY-4)', '112233'], ['Trainee 11', 'Fellow', '223344'], ['Trainee 12', 'Intern', '334455']];
   let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
   const rows = [];
   for (let i = 40; i >= 1; i--) {
@@ -80,12 +80,12 @@
   async function handle(action, p) {
     await sleep(action === 'register' ? 900 : 350);
     const s = session();
-    const user = { email: 'sara.ahmed@gmail.com', name: 'Sara Ahmed', picture: '' };
+    const user = { email: 'trainee02@example.com', name: 'Trainee 02', picture: '' };
     switch (action) {
       case 'config': return cfg();
       case 'me': {
-        const rec = scenario === 'already' ? { date: s.date, dateLabel: s.label, time: hms(new Date(startAt.getTime() + 240000)), fullName: 'Sara Ahmed', staffId: '234567', level: 'R1 (PGY-1)', location: 'Passed', distance: 21, recordId: 'MR-DEMO-SARA', position: 3 } : null;
-        return stamp({ user, profile: { fullName: 'Sara Ahmed', staffId: '234567', level: 'R1 (PGY-1)' }, record: rec, role: 'manage', session: s });
+        const rec = scenario === 'already' ? { date: s.date, dateLabel: s.label, time: hms(new Date(startAt.getTime() + 240000)), fullName: 'Trainee 02', staffId: '234567', level: 'R1 (PGY-1)', location: 'Passed', distance: 21, recordId: 'MR-DEMO-02', position: 3 } : null;
+        return stamp({ user, profile: { fullName: 'Trainee 02', staffId: '234567', level: 'R1 (PGY-1)' }, record: rec, role: 'manage', session: s });
       }
       case 'register': {
         if (s.state === 'upcoming') return err('WINDOW_NOT_OPEN', 'Registration opens at ' + s.start + ' (Riyadh time). Please try again then.');

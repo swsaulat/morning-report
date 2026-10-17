@@ -88,7 +88,7 @@
         b.type = 'button'; b.className = 'gbtn-demo';
         b.innerHTML = GOOGLE_G + '<span>Continue with Google <small>(demo)</small></span>';
         b.onclick = () => {
-          const fake = 'demo.' + btoa(JSON.stringify({ email: 'sara.ahmed@gmail.com', name: 'Sara Ahmed', picture: '', exp: Math.floor(Date.now() / 1000) + 3600 })).replace(/=+$/, '') + '.sig';
+          const fake = 'demo.' + btoa(JSON.stringify({ email: 'trainee02@example.com', name: 'Trainee 02', picture: '', exp: Math.floor(Date.now() / 1000) + 3600 })).replace(/=+$/, '') + '.sig';
           this.set(fake); onSignIn(this.user);
         };
         el.appendChild(b);
