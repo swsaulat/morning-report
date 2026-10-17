@@ -20,7 +20,7 @@
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body { background: radial-gradient(1200px 500px at 50% -200px, #0F3A42 0%, transparent 70%), var(--bg); } }
   .shell { max-width: 520px; margin: 0 auto; padding: 0 14px calc(28px + env(safe-area-inset-bottom)); }
   .top { display: flex; align-items: center; justify-content: space-between; padding: 14px 4px 12px; }
-  .top .logo { height: 40px; width: auto; }
+  .top .logo { height: 64px; width: auto; border-radius: 10px; background: #fff; padding: 3px; }
   .clock { font-weight: 700; font-size: 13px; color: var(--ink-2); background: var(--surface); border: 1px solid var(--line); padding: 6px 10px; border-radius: 999px; }
 
   .hero {
@@ -113,8 +113,7 @@
 <body>
 <div class="shell">
   <div class="top">
-    <img class="logo light-logo" src="logo.svg" alt="Security Forces Hospital – Medical Services, Ministry of Interior">
-    <img class="logo dark-logo" src="logo-w.svg" alt="">
+    <img class="logo" src="logo.jpg" alt="Security Forces Hospital – Riyadh">
     <span class="clock num" id="clock" aria-label="Current time">--:--</span>
   </div>
 
