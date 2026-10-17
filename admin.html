@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Attendance Admin · Morning Report</title>
+<meta name="theme-color" content="#0E5F68">
+<meta name="author" content="Dr. Swaid Saulat">
+<meta name="robots" content="noindex">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 18px 16px 48px; }
+  .brandbar-in .title { font-weight: 800; font-size: 15px; letter-spacing: -.01em; padding-left: 14px; border-left: 1px solid var(--line); }
+  .brandbar-in .title small { display: block; font-weight: 500; color: var(--mute); font-size: 12px; }
+  .me { display: flex; align-items: center; gap: 10px; margin-left: auto; font-size: 13px; }
+  .me .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--teal-soft); color: var(--teal-d); display: grid; place-items: center; font-weight: 800; font-size: 13px; }
+  @media (max-width: 640px) { .me .who-txt, .brandbar-in .title small { display: none; } .brand-logo { height: 32px; } }
+
+  .gate { max-width: 420px; margin: 8vh auto 0; text-align: center; padding: 32px 28px; }
+  .gate h1 { margin: 10px 0 6px; font-size: 22px; letter-spacing: -.02em; }
+  .gate #gbtn { display: flex; justify-content: center; margin-top: 18px; min-height: 44px; }
+  .gbtn-demo { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 46px; border-radius: 999px; border: 1px solid #DADCE0; background: #fff; color: #1F1F1F; font-weight: 600; cursor: pointer; }
+  .gbtn-demo small { color: #888; font-weight: 500; }
+
+  .head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 6px 0 16px; }
+  .head h1 { margin: 0; font-size: 24px; letter-spacing: -.02em; }
+  .datenav { display: flex; align-items: center; gap: 6px; }
+  .datenav input { min-height: 38px; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); }
+  .iconbtn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); display: grid; place-items: center; cursor: pointer; color: var(--ink-2); }
+  .iconbtn:hover { background: var(--surface-2); }
+  .iconbtn svg { width: 18px; height: 18px; }
+  .spacer { flex: 1; }
+
+  .warns { display: grid; gap: 8px; margin-bottom: 14px; }
+  .kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 980px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .kpis .kpi:first-child { grid-column: span 2; } }
+  .kpi { padding: 16px 18px; }
+  .kpi .v { font-size: 30px; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; margin-top: 6px; color: var(--ink); }
+  .kpi .s { font-size: 12.5px; color: var(--mute); margin-top: 4px; }
+  .kpi.hero { background: linear-gradient(140deg, #13838C, #0E5F68 55%, #08414A); color: #fff; border: 0; }
+  .kpi.hero .eyebrow, .kpi.hero .s { color: #BFE6E9; }
+  .kpi.hero .v { color: #fff; font-size: 38px; }
+
+  .tabs { display: flex; gap: 4px; margin: 22px 0 14px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+  .tab { background: none; border: 0; padding: 10px 14px; font-weight: 600; color: var(--mute); cursor: pointer; border-bottom: 2.5px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .tab[aria-selected="true"] { color: var(--teal-d); border-bottom-color: var(--teal); }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+  .search { min-height: 38px; padding: 6px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); min-width: 200px; flex: 1; max-width: 320px; }
+  select.search { flex: 0; min-width: 140px; }
+
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; align-items: start; }
+  @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+  .panel-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+  .panel-h h2 { margin: 0; font-size: 15px; }
+  .panel-b { padding: 14px 18px; }
+
+  table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .t th { text-align: left; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--mute); font-weight: 700; padding: 10px 12px; border-bottom: 1px solid var(--line); background: var(--surface-2); position: sticky; top: 0; cursor: default; white-space: nowrap; }
+  .t th[data-sort] { cursor: pointer; }
+  .t th[data-sort]:hover { color: var(--ink); }
+  .t td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .t tr:last-child td { border-bottom: 0; }
+  .t tbody tr:hover td { background: var(--surface-2); }
+  .t .nm { font-weight: 650; }
+  .t .sub { font-size: 12px; color: var(--mute); }
+  .tscroll { max-height: 560px; overflow: auto; }
+  @media (max-width: 720px) { .hide-sm { display: none; } }
+  .empty { text-align: center; color: var(--mute); padding: 40px 16px; font-size: 14px; }
+
+  .hbar { display: grid; grid-template-columns: 120px 1fr 34px; gap: 10px; align-items: center; font-size: 13px; padding: 5px 0; }
+  .hbar .lab { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hbar .track { height: 10px; background: var(--surface-2); border-radius: 5px; overflow: hidden; }
+  .hbar .fill { height: 100%; background: var(--teal); border-radius: 0 4px 4px 0; }
+  .hbar .n { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  .chart { position: relative; }
+  .chart svg { width: 100%; height: 170px; overflow: visible; }
+  .chart .bar { fill: var(--teal); }
+  .chart .bar.sel { fill: var(--teal-d); }
+  .chart .hit:hover + .bar, .chart .bar:hover { fill: var(--teal-d); }
+  .chart .grid line { stroke: var(--line); }
+  .chart .axis text { fill: var(--mute); font-size: 10px; }
+  .tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--surface); font-size: 12px; padding: 6px 9px; border-radius: 8px; white-space: nowrap; transform: translate(-50%, -110%); box-shadow: var(--shadow); }
+
+  .rej { padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .rej:last-child { border-bottom: 0; }
+  .rej .r1 { display: flex; justify-content: space-between; gap: 8px; font-weight: 600; }
+  .rej .r2 { color: var(--mute); font-size: 12.5px; margin-top: 2px; }
+
+  .pbar { display: flex; align-items: center; gap: 8px; min-width: 120px; }
+  .pbar .track { flex: 1; height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+  .pbar .fill { height: 100%; border-radius: 0 4px 4px 0; }
+  .pbar .n { width: 38px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; font-size: 12.5px; }
+
+  .kvs { display: grid; grid-template-columns: 180px 1fr; gap: 0; font-size: 13.5px; }
+  .kvs > div { padding: 9px 0; border-bottom: 1px solid var(--line); }
+  .kvs > div:nth-child(odd) { color: var(--mute); }
+  .links { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+  .linkcard { display: flex; gap: 12px; align-items: center; padding: 14px; border: 1px solid var(--line); border-radius: 14px; text-decoration: none; color: var(--ink); background: var(--surface); }
+  .linkcard:hover { border-color: var(--teal); }
+  .linkcard .ic { width: 38px; height: 38px; border-radius: 10px; background: var(--teal-soft); color: var(--teal-d); display: grid; place-items: center; flex: none; }
+  .linkcard .ic svg { width: 20px; height: 20px; }
+  .linkcard b { display: block; font-size: 14px; }
+  .linkcard span { font-size: 12px; color: var(--mute); }
+
+  .menu { position: relative; }
+  .menu-list { position: absolute; right: 0; top: calc(100% + 6px); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow-lg); min-width: 240px; padding: 6px; z-index: 20; }
+  .menu-list button, .menu-list a { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 10px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; color: var(--ink); text-decoration: none; }
+  .menu-list button:hover, .menu-list a:hover { background: var(--surface-2); }
+  .geo-live { font-size: 13px; padding: 12px; border-radius: 12px; background: var(--surface-2); margin: 10px 0; }
+</style>
+</head>
+<body>
+<header class="brandbar">
+  <div class="brandbar-in">
+    <img class="brand-logo light-logo" src="logo.svg" alt="SFH Medical Services">
+    <img class="brand-logo dark-logo" src="logo-w.svg" alt="">
+    <div class="title">Attendance Admin<small id="sub">Adult Emergency Department · Morning Report</small></div>
+    <div class="me" id="me" hidden></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="card gate" id="gate">
+    <img src="icon.svg" alt="" width="56" height="56" style="margin:0 auto">
+    <h1>Admin dashboard</h1>
+    <p class="muted" style="margin:0">Sign in with the Google account listed in the Recipients tab.</p>
+    <div id="gbtn"><div class="skel" style="width:100%;height:44px;border-radius:999px"></div></div>
+    <div id="gateErr" style="margin-top:14px"></div>
+  </section>
+
+  <main id="app" hidden>
+    <div class="warns" id="warns"></div>
+
+    <div class="head">
+      <h1 id="h1">Today</h1>
+      <span id="statePill"></span>
+      <div class="spacer"></div>
+      <div class="datenav">
+        <button class="iconbtn" id="prevDay" title="Previous day" aria-label="Previous day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <input type="date" id="date" aria-label="Session date">
+        <button class="iconbtn" id="nextDay" title="Next day" aria-label="Next day"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button class="btn btn-ghost btn-sm" id="todayBtn">Today</button>
+        <button class="iconbtn" id="refresh" title="Refresh" aria-label="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg></button>
+      </div>
+    </div>
+
+    <section class="kpis" id="kpis"></section>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-tab="session">Session register</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="trainees">Trainee attendance</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="system">System &amp; links</button>
+    </nav>
+
+    <!-- Session tab -->
+    <section data-pane="session">
+      <div class="toolbar">
+        <input class="search" id="q" type="search" placeholder="Search name, ID, level…">
+        <div class="spacer"></div>
+        <button class="btn btn-soft btn-sm manage" id="addBtn">+ Manual entry</button>
+        <div class="menu">
+          <button class="btn btn-ghost btn-sm" id="reportBtn">Email report ▾</button>
+          <div class="menu-list" id="reportMenu" hidden>
+            <button data-r="me">Send a copy to me</button>
+            <button data-r="all" class="manage">Send to all recipients</button>
+          </div>
+        </div>
+        <div class="menu">
+          <button class="btn btn-ghost btn-sm" id="exportBtn">Export CSV ▾</button>
+          <div class="menu-list" id="exportMenu" hidden>
+            <button data-x="day">This session</button>
+            <button data-x="30">Last 30 days</button>
+            <button data-x="365">Last 12 months</button>
+            <button data-x="all">Everything</button>
+          </div>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="card" style="overflow:hidden">
+          <div class="panel-h"><h2 id="regTitle">Register</h2><span class="muted num" id="regCount"></span></div>
+          <div class="tscroll"><table class="t" id="regTable"></table></div>
+        </div>
+        <div style="display:grid;gap:16px">
+          <div class="card"><div class="panel-h"><h2>By training level</h2></div><div class="panel-b" id="levels"></div></div>
+          <div class="card"><div class="panel-h"><h2>Attendance · last 30 sessions</h2></div><div class="panel-b"><div class="chart" id="trend"></div></div></div>
+          <div class="card"><div class="panel-h"><h2>Rejected attempts</h2><span class="muted num" id="rejCount"></span></div><div class="panel-b" id="rej"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trainees tab -->
+    <section data-pane="trainees" hidden>
+      <div class="toolbar">
+        <input class="search" id="tq" type="search" placeholder="Search trainee…">
+        <select class="search" id="tLevel"><option value="">All levels</option></select>
+        <select class="search" id="tRange">
+          <option value="30">Last 30 days</option><option value="60">Last 60 days</option><option value="90">Last 90 days</option>
+          <option value="180">Last 6 months</option><option value="365">Last 12 months</option>
+        </select>
+        <div class="spacer"></div>
+        <span class="muted" id="tMeta"></span>
+      </div>
+      <div class="card" style="overflow:hidden"><div class="tscroll" style="max-height:none"><table class="t" id="tTable"></table></div></div>
+    </section>
+
+    <!-- System tab -->
+    <section data-pane="system" hidden>
+      <div class="links" id="links" style="margin-bottom:16px"></div>
+      <div class="grid">
+        <div class="card"><div class="panel-h"><h2>Current configuration</h2><span class="muted" style="font-size:12px">Edit in the Google Sheet → Settings</span></div><div class="panel-b"><div class="kvs" id="cfg"></div></div></div>
+        <div class="card"><div class="panel-h"><h2>Daily report recipients</h2></div><div class="panel-b" id="rcp"></div></div>
+      </div>
+    </section>
+  </main>
+  <footer class="credit" style="margin-top:28px">Morning Report Attendance System · Developed by <b>Dr. Swaid Saulat</b><span class="sep">·</span>Patient Flow Management System, powered by Ruqelo<span class="sep">·</span><a href="https://patientflowms.com" target="_blank" rel="noopener">patientflowms.com</a><span class="sep">·</span><a href="https://ruqelo.com" target="_blank" rel="noopener">ruqelo.com</a></footer>
+</div>
+
+<script src="config.js"></script>
+<script src="core.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+(function () {
+  'use strict';
+  const { $, $$, esc, call, Auth } = MR;
+  const S = { data: null, date: null, role: null, sort: { key: 'time', dir: 1 }, tSort: { key: 'count', dir: -1 }, trainees: null, timer: null, cfgPublic: null };
+  const IC = {
+    sheet: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/></svg>',
+    phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>',
+    tv: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+    qr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 20h1M17 20v1"/></svg>',
+    folder: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+    pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>'
+  };
+
+  /* ---------- Auth ---------- */
+  async function boot() {
+    const c = await call('config');
+    if (!c.ok) { $('#gbtn').innerHTML = ''; $('#gateErr').innerHTML = '<div class="notice notice-bad">' + esc(c.message) + '</div>'; return; }
+    S.cfgPublic = c;
+    $('#sub').textContent = c.department + ' · ' + c.program;
+    if (c.authMode === 'TEST') {
+      $('#gbtn').innerHTML = '<div style="width:100%"><input class="input" id="tEmail" type="email" placeholder="Admin email (test mode)"><button class="btn btn-primary btn-block" id="tGo" style="margin-top:10px">Continue</button></div>';
+      $('#tGo').onclick = () => { Auth.testEmail = $('#tEmail').value.trim().toLowerCase(); start(); };
+      return;
+    }
+    if (Auth.restore()) return start();
+    Auth.mount($('#gbtn'), c.googleClientId, start, { oneTap: true });
+  }
+
+  async function start() {
+    const today = S.cfgPublic.session.date;
+    S.date = MR.qs.get('date') || today;
+    await load();
+  }
+
+  function signOut() { Auth.clear(); Auth.testEmail = null; location.reload(); }
+
+  /* ---------- Data ---------- */
+  async function load(silent) {
+    if (!silent) $('#refresh').disabled = true;
+    const res = await call('admin.overview', Object.assign({ date: S.date }, Auth.payload()));
+    $('#refresh').disabled = false;
+    if (!res.ok) {
+      if (/^AUTH_/.test(res.code)) { Auth.clear(); $('#app').hidden = true; $('#gate').hidden = false; MR.toast(res.message, 'bad'); return Auth.mount($('#gbtn'), S.cfgPublic.googleClientId, start, { oneTap: false, autoSelect: false }); }
+      if (res.code === 'FORBIDDEN') {
+        $('#app').hidden = true; $('#gate').hidden = false;
+        $('#gateErr').innerHTML = '<div class="notice notice-bad">' + esc(res.message) + '</div><button class="btn btn-ghost btn-sm" style="margin-top:10px" id="swAcc">Use another account</button>';
+        $('#swAcc').onclick = signOut; return;
+      }
+      return MR.toast(res.message || 'Could not load data', 'bad');
+    }
+    S.data = res; S.role = res.me.role;
+    $('#gate').hidden = true; $('#app').hidden = false;
+    render();
+    schedule();
+  }
+
+  function schedule() {
+    clearTimeout(S.timer);
+    const live = S.data && S.data.date === S.data.today.date && (S.data.today.state === 'open' || S.data.today.state === 'upcoming');
+    S.timer = setTimeout(() => load(true), live ? 20000 : 120000);
+  }
+
+  /* ---------- Render ---------- */
+  function render() {
+    const d = S.data;
+    const me = d.me;
+    const ini = (me.name || me.email).split(/[\s@.]/).filter(Boolean).slice(0, 2).map(x => x[0].toUpperCase()).join('');
+    $('#me').hidden = false;
+    $('#me').innerHTML = '<div class="who-txt" style="text-align:right;line-height:1.3"><b>' + esc(me.name || me.email) + '</b><br><span class="muted">' + (me.role === 'manage' ? 'Manager' : 'Viewer') + '</span></div>' +
+      '<div class="avatar">' + esc(ini) + '</div><button class="btn btn-ghost btn-sm" id="out">Sign out</button>';
+    $('#out').onclick = signOut;
+    $$('.manage').forEach(el => el.hidden = me.role !== 'manage');
+
+    $('#warns').innerHTML = d.warnings.map(w => '<div class="notice notice-' + (w.level === 'danger' ? 'bad' : w.level === 'warn' ? 'warn' : 'info') + '">' + esc(w.text) + '</div>').join('');
+
+    const isToday = d.date === d.today.date;
+    $('#date').value = d.date;
+    $('#h1').textContent = isToday ? 'Today' : d.session.label;
+    const st = isToday ? d.today.state : (d.session.isSessionDay ? 'past' : 'none');
+    const pills = { open: ['ok pulse', 'Registration open until ' + d.today.end], upcoming: ['info', 'Opens at ' + d.today.start], closed: ['mute', 'Closed at ' + d.today.end],
+      none: ['mute', 'No session scheduled'], cancelled: ['warn', 'Session cancelled'], past: ['mute', d.session.start + '–' + d.session.end] };
+    const p = pills[st] || pills.none;
+    $('#statePill').innerHTML = '<span class="pill pill-' + p[0] + '"><span class="dot"></span>' + esc(p[1]) + '</span>';
+
+    const k = d.kpis;
+    const rep = d.report;
+    const repTxt = rep ? (rep.skipped ? 'Skipped' : 'Sent ' + fmtTime(rep.sentAt)) : (d.session.isSessionDay ? (isToday ? 'Due ' + fmtTime(d.session.reportAt) : 'Not sent') : '—');
+    $('#kpis').innerHTML =
+      kpi('Present', k.present, isToday ? 'registered today' : 'on ' + shortDate(d.date), 'hero') +
+      kpi('Average', k.avg30, 'per session · 30 days') +
+      kpi('Trainees', k.trainees30, 'attended in 30 days') +
+      kpi('Sessions', k.sessions30, 'held in 30 days') +
+      kpi('Daily report', '<span style="font-size:20px">' + esc(repTxt) + '</span>', rep && rep.trigger ? esc(rep.trigger) : 'auto ' + (S.data.settings.reportDelay) + ' min after close', '', true);
+
+    renderRegister();
+    renderLevels();
+    renderTrend();
+    renderRej();
+    renderSystem();
+    if (S.trainees === null && !$('[data-pane="trainees"]').hidden) loadTrainees();
+  }
+
+  function kpi(label, v, sub, cls, raw) {
+    return '<div class="card kpi ' + (cls || '') + '"><div class="eyebrow">' + esc(label) + '</div><div class="v num">' + (raw ? v : esc(v)) + '</div><div class="s">' + (raw ? sub : esc(sub)) + '</div></div>';
+  }
+
+  function renderRegister() {
+    const d = S.data, q = $('#q').value.trim().toLowerCase();
+    let rows = d.records.slice();
+    if (q) rows = rows.filter(r => (r.fullName + ' ' + r.staffId + ' ' + r.level + ' ' + r.email).toLowerCase().includes(q));
+    const { key, dir } = S.sort;
+    rows.sort((a, b) => String(a[key] ?? '').localeCompare(String(b[key] ?? ''), undefined, { numeric: true }) * dir);
+    $('#regTitle').textContent = 'Register · ' + shortDate(d.date);
+    $('#regCount').textContent = d.records.length + ' present';
+    const th = (k, l, cls) => '<th data-sort="' + k + '" class="' + (cls || '') + '">' + l + (S.sort.key === k ? (S.sort.dir > 0 ? ' ↑' : ' ↓') : '') + '</th>';
+    if (!d.records.length) { $('#regTable').innerHTML = '<tr><td class="empty">' + (d.session.isSessionDay ? 'No registrations yet for this session.' : 'No session on this date.') + '</td></tr>'; return; }
+    $('#regTable').innerHTML = '<thead><tr><th>#</th>' + th('time', 'Time') + th('fullName', 'Name') + th('staffId', 'Staff ID') + th('level', 'Level') + th('location', 'Verification', 'hide-sm') + '</tr></thead><tbody>' +
+      rows.map((r, i) => {
+        const manual = /^Manual/.test(r.method);
+        const ver = manual ? '<span class="pill pill-warn">Manual</span>' : r.location === 'Passed' ? '<span class="pill pill-ok">GPS · ' + (r.distance ?? '?') + ' m</span>' : '<span class="pill pill-info">' + esc(r.location || 'Google') + '</span>';
+        return '<tr title="' + esc((r.email || '') + (r.device ? ' · ' + r.device : '') + (r.notes ? ' · ' + r.notes : '') + ' · ' + r.recordId) + '"><td class="muted num">' + (i + 1) + '</td><td class="num">' + esc(String(r.time).slice(0, 5)) + '</td>' +
+          '<td><div class="nm">' + esc(r.fullName) + '</div><div class="sub">' + esc(r.email || '') + '</div></td><td class="num">' + esc(r.staffId) + '</td><td>' + esc(r.level) + '</td><td class="hide-sm">' + ver + '</td></tr>';
+      }).join('') + '</tbody>';
+    $$('#regTable th[data-sort]').forEach(h => h.onclick = () => { const k = h.dataset.sort; S.sort = { key: k, dir: S.sort.key === k ? -S.sort.dir : 1 }; renderRegister(); });
+  }
+
+  function renderLevels() {
+    const lv = S.data.byLevel, keys = S.data.levels.filter(l => lv[l]).concat(Object.keys(lv).filter(l => S.data.levels.indexOf(l) < 0));
+    const max = Math.max(1, ...keys.map(k => lv[k]));
+    $('#levels').innerHTML = keys.length ? keys.map(k => '<div class="hbar"><span class="lab" title="' + esc(k) + '">' + esc(k) + '</span><div class="track"><div class="fill" style="width:' + (lv[k] / max * 100) + '%"></div></div><span class="n">' + lv[k] + '</span></div>').join('')
+      : '<div class="muted" style="font-size:13px">No data for this session.</div>';
+  }
+
+  function renderTrend() {
+    const t = S.data.trend, el = $('#trend');
+    if (!t.length) { el.innerHTML = '<div class="muted" style="font-size:13px">No sessions recorded yet.</div>'; return; }
+    const W = 300, H = 170, padL = 24, padB = 20, padT = 8;
+    const max = Math.max(4, ...t.map(x => x.count));
+    const step = niceStep(max), top = Math.ceil(max / step) * step;
+    const bw = (W - padL) / t.length, gap = Math.min(4, bw * 0.3);
+    const y = v => padT + (H - padB - padT) * (1 - v / top);
+    let g = '<g class="grid">';
+    for (let v = 0; v <= top; v += step) g += '<line x1="' + padL + '" x2="' + W + '" y1="' + y(v) + '" y2="' + y(v) + '"/>';
+    g += '</g><g class="axis">';
+    for (let v = 0; v <= top; v += step) g += '<text x="' + (padL - 6) + '" y="' + (y(v) + 3) + '" text-anchor="end">' + v + '</text>';
+    const lblEvery = Math.ceil(t.length / 5);
+    t.forEach((p, i) => { if (i % lblEvery === 0 || i === t.length - 1) g += '<text x="' + (padL + i * bw + bw / 2) + '" y="' + (H - 4) + '" text-anchor="middle">' + esc(shortDate(p.date, true)) + '</text>'; });
+    g += '</g>';
+    let bars = '';
+    t.forEach((p, i) => {
+      const x = padL + i * bw + gap / 2, w = Math.max(1, bw - gap), yy = y(p.count), h = (H - padB) - yy, r = Math.min(4, w / 2, h);
+      const path = 'M' + x + ',' + (H - padB) + 'V' + (yy + r) + 'Q' + x + ',' + yy + ' ' + (x + r) + ',' + yy + 'H' + (x + w - r) + 'Q' + (x + w) + ',' + yy + ' ' + (x + w) + ',' + (yy + r) + 'V' + (H - padB) + 'Z';
+      bars += '<rect class="hit" data-i="' + i + '" x="' + (padL + i * bw) + '" y="' + padT + '" width="' + bw + '" height="' + (H - padB - padT) + '" fill="transparent"/>' +
+        '<path class="bar' + (p.date === S.data.date ? ' sel' : '') + '" d="' + (h > 0 ? path : '') + '"/>';
+    });
+    el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="Attendance per session, last ' + t.length + ' sessions">' + g + bars + '</svg><div class="tip" hidden></div>' +
+      '<details style="margin-top:8px;font-size:12.5px"><summary class="muted" style="cursor:pointer">Table view</summary><table class="t" style="margin-top:6px"><tbody>' +
+      t.slice().reverse().map(p => '<tr><td>' + esc(shortDate(p.date)) + '</td><td class="num" style="text-align:right">' + p.count + '</td></tr>').join('') + '</tbody></table></details>';
+    const tip = el.querySelector('.tip'), svg = el.querySelector('svg');
+    svg.addEventListener('mousemove', e => {
+      const h = e.target.closest('.hit'); if (!h) { tip.hidden = true; return; }
+      const p = t[+h.dataset.i], rect = svg.getBoundingClientRect(), er = el.getBoundingClientRect();
+      tip.hidden = false; tip.innerHTML = '<b>' + p.count + '</b> present · ' + esc(shortDate(p.date));
+      tip.style.left = ((+h.getAttribute('x') + bw / 2) / W * rect.width + rect.left - er.left) + 'px';
+      tip.style.top = (y(p.count) / H * rect.height + rect.top - er.top) + 'px';
+    });
+    svg.addEventListener('mouseleave', () => tip.hidden = true);
+    svg.addEventListener('click', e => { const h = e.target.closest('.hit'); if (h) { S.date = t[+h.dataset.i].date; load(); } });
+    svg.style.cursor = 'pointer';
+  }
+  function niceStep(max) { const raw = max / 4, p = Math.pow(10, Math.floor(Math.log10(raw))); const n = raw / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * p; }
+
+  function renderRej() {
+    const r = S.data.rejections;
+    $('#rejCount').textContent = r.length ? r.length : '';
+    $('#rej').innerHTML = r.length ? r.slice(0, 30).map(x => '<div class="rej"><div class="r1"><span>' + esc(x.fullName || x.email || 'Unknown') + '</span><span class="muted num" style="font-weight:500">' + esc(String(x.at).slice(-8, -3) || x.at) + '</span></div>' +
+      '<div class="r2"><span class="pill pill-bad" style="padding:1px 7px;font-size:11px">' + esc(reasonLabel(x.reason)) + '</span> ' + esc(x.staffId || '') + ' · ' + esc(x.email || '') + '</div>' +
+      '<div class="r2">' + esc(x.message) + '</div></div>').join('') : '<div class="muted" style="font-size:13px">None. All attempts on this date were accepted.</div>';
+  }
+  const reasonLabel = c => ({ WINDOW_CLOSED: 'Late', GEO_OUTSIDE: 'Outside area', GEO_WEAK: 'Weak GPS', CODE_EXPIRED: 'Old QR', CODE_REQUIRED: 'No live QR', ID_ALREADY_USED: 'ID reused', ID_LINKED_ELSEWHERE: 'ID linked', ACCOUNT_LINKED_ELSEWHERE: 'Account linked', NOT_ON_ROSTER: 'Not on roster' }[c] || c);
+
+  function renderSystem() {
+    const d = S.data, s = d.settings, base = new URL('./', location.href).href;
+    const disp = d.displayKey ? base + 'display.html?key=' + encodeURIComponent(d.displayKey) : '';
+    const link = (href, ic, t, sub, attrs) => href ? '<a class="linkcard" href="' + esc(href) + '" target="_blank" rel="noopener" ' + (attrs || '') + '><div class="ic">' + ic + '</div><div><b>' + esc(t) + '</b><span>' + esc(sub) + '</span></div></a>' : '';
+    $('#links').innerHTML =
+      link(d.links.sheet, IC.sheet, 'Master register', 'Google Sheet · all sessions') +
+      link(d.links.attendee || MR.attendeeUrl(), IC.phone, 'Attendee page', 'What the QR code opens') +
+      link(base + 'poster.html', IC.qr, 'Classroom poster', 'Print-ready A4 with QR') +
+      link(disp, IC.tv, 'Classroom display', 'Live screen for the projector') +
+      link(d.links.archive, IC.folder, 'PDF archive', 'Every daily report in Drive') +
+      (S.role === 'manage' ? '<a class="linkcard" href="#" id="geoBtn"><div class="ic">' + IC.pin + '</div><div><b>Set classroom location</b><span>Stand in the room and tap</span></div></a>' : '');
+    const g = $('#geoBtn'); if (g) g.onclick = e => { e.preventDefault(); setLocation(); };
+    const geo = s.geofence ? (s.lat !== null && s.lat !== '' ? 'On · ' + s.radius + ' m around ' + Number(s.lat).toFixed(5) + ', ' + Number(s.lng).toFixed(5) : 'On · location NOT set') : 'Off';
+    $('#cfg').innerHTML = [
+      ['Registration window', s.windowStart + '–' + s.windowEnd + ' (' + s.timezone + ')'],
+      ['Session days', (s.sessionDays || []).join(', ')],
+      ['Location check', geo],
+      ['Live rotating QR', s.liveCode ? 'Required' : 'Off'],
+      ['Daily report', s.reportDelay + ' min after the window closes'],
+      ['Sign-in', s.authMode === 'TEST' ? 'TEST MODE (no Google sign-in)' : 'Google account (verified)']
+    ].map(r => '<div>' + esc(r[0]) + '</div><div>' + esc(r[1]) + '</div>').join('');
+    $('#rcp').innerHTML = s.recipients.length ? s.recipients.map(r => '<div class="rej"><div class="r1"><span>' + esc(r.name || r.role) + '</span></div><div class="r2">' + esc(r.role) + ' · ' + esc(r.email) + '</div></div>').join('')
+      : '<div class="notice notice-warn">No recipients yet. Add them in the Recipients tab.</div>';
+  }
+
+  /* ---------- Trainees ---------- */
+  async function loadTrainees() {
+    $('#tTable').innerHTML = '<tr><td class="empty">Loading…</td></tr>';
+    const res = await call('admin.trainees', Object.assign({ days: +$('#tRange').value }, Auth.payload()));
+    if (!res.ok) { $('#tTable').innerHTML = '<tr><td class="empty">' + esc(res.message) + '</td></tr>'; return; }
+    S.trainees = res;
+    const lv = $('#tLevel'), cur = lv.value;
+    lv.innerHTML = '<option value="">All levels</option>' + S.data.levels.map(l => '<option' + (l === cur ? ' selected' : '') + '>' + esc(l) + '</option>').join('');
+    renderTrainees();
+  }
+  function renderTrainees() {
+    const t = S.trainees; if (!t) return;
+    const q = $('#tq').value.trim().toLowerCase(), lv = $('#tLevel').value;
+    let rows = t.trainees.filter(x => (!lv || x.level === lv) && (!q || (x.fullName + ' ' + x.staffId + ' ' + x.email).toLowerCase().includes(q)));
+    const { key, dir } = S.tSort;
+    rows.sort((a, b) => (typeof a[key] === 'number' ? (a[key] - b[key]) : String(a[key] || '').localeCompare(String(b[key] || ''))) * dir);
+    $('#tMeta').textContent = t.sessions + ' sessions · ' + shortDate(t.from) + ' – ' + shortDate(t.to);
+    const th = (k, l, cls) => '<th data-sort="' + k + '" class="' + (cls || '') + '">' + l + (S.tSort.key === k ? (S.tSort.dir > 0 ? ' ↑' : ' ↓') : '') + '</th>';
+    $('#tTable').innerHTML = rows.length ? '<thead><tr>' + th('fullName', 'Trainee') + th('staffId', 'Staff ID') + th('level', 'Level') + th('count', 'Attended') + th('pct', 'Attendance rate') + th('last', 'Last seen', 'hide-sm') + '</tr></thead><tbody>' +
+      rows.map(x => {
+        const col = x.pct >= 75 ? 'var(--ok)' : x.pct >= 50 ? 'var(--warn)' : 'var(--bad)';
+        const lbl = x.pct >= 75 ? '' : x.pct >= 50 ? ' title="Below 75%"' : ' title="Below 50%"';
+        return '<tr><td><div class="nm">' + esc(x.fullName) + '</div><div class="sub">' + esc(x.email || '') + '</div></td><td class="num">' + esc(x.staffId) + '</td><td>' + esc(x.level) + '</td>' +
+          '<td class="num"><b>' + x.count + '</b> <span class="muted">/ ' + t.sessions + '</span></td>' +
+          '<td><div class="pbar"' + lbl + '><div class="track"><div class="fill" style="width:' + x.pct + '%;background:' + col + '"></div></div><span class="n">' + x.pct + '%</span></div></td>' +
+          '<td class="hide-sm num muted">' + esc(x.last ? shortDate(x.last) : '—') + '</td></tr>';
+      }).join('') + '</tbody>' : '<tr><td class="empty">No trainees match.</td></tr>';
+    $$('#tTable th[data-sort]').forEach(h => h.onclick = () => { const k = h.dataset.sort; S.tSort = { key: k, dir: S.tSort.key === k ? -S.tSort.dir : (k === 'count' || k === 'pct' ? -1 : 1) }; renderTrainees(); });
+  }
+
+  /* ---------- Actions ---------- */
+  function manualEntry() {
+    const levels = S.data.levels.map(l => '<option>' + esc(l) + '</option>').join('');
+    const m = MR.modal('Add manual entry',
+      '<p class="muted" style="margin:0 0 12px;font-size:13.5px">For someone who attended but could not register (e.g. phone problem). It is marked <b>Manual</b> in the register and report.</p>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><label class="field" style="margin:0"><span class="label">Date</span><input class="input" type="date" id="mDate" value="' + esc(S.data.date) + '"></label>' +
+      '<label class="field" style="margin:0"><span class="label">Time</span><input class="input" type="time" id="mTime" value="' + esc(S.data.session.start || '06:00') + '"></label></div>' +
+      '<label class="field"><span class="label">Full name</span><input class="input" id="mName" autocomplete="off"></label>' +
+      '<label class="field"><span class="label">' + esc(S.cfgPublic.staffIdLabel) + '</span><input class="input" id="mId" autocomplete="off"></label>' +
+      '<label class="field"><span class="label">Training level</span><select class="input" id="mLevel"><option value="">Choose…</option>' + levels + '</select></label>' +
+      '<label class="field"><span class="label">Note (optional)</span><input class="input" id="mNote" placeholder="e.g. phone battery dead, confirmed by chief resident"></label>',
+      [{ label: 'Cancel' }, { label: 'Add entry', cls: 'btn-primary', onClick: async (close, btn) => {
+        MR.busy(btn, true, 'Saving…');
+        const res = await call('admin.manualAdd', Object.assign({ date: $('#mDate').value, time: $('#mTime').value, fullName: $('#mName').value, staffId: $('#mId').value, level: $('#mLevel').value, note: $('#mNote').value }, Auth.payload()));
+        MR.busy(btn, false);
+        if (!res.ok) return MR.toast(res.message, 'bad', 5000);
+        close(); MR.toast('Added ' + res.record.fullName, 'ok'); S.date = res.record.date; load();
+      } }]);
+    return m;
+  }
+
+  async function sendReport(kind) {
+    const all = kind === 'all';
+    if (all && !confirm('Email the report for ' + S.data.date + ' to all daily-report recipients now?')) return;
+    MR.toast('Sending…');
+    const res = await call('admin.sendReport', Object.assign({ date: S.data.date, toMeOnly: !all }, Auth.payload()), { timeout: 60000 });
+    if (!res.ok) return MR.toast(res.message, 'bad', 6000);
+    MR.toast('Report sent to ' + res.sent.to.join(', '), 'ok', 5000);
+    if (all) load(true);
+  }
+
+  async function exportCsv(kind) {
+    const d = S.data.date;
+    let from = '', to = '';
+    if (kind === 'day') { from = to = d; }
+    else if (kind !== 'all') { to = S.data.today.date; from = new Date(Date.now() - (+kind - 1) * 864e5).toISOString().slice(0, 10); }
+    const res = await call('admin.export', Object.assign({ from, to }, Auth.payload()), { timeout: 60000 });
+    if (!res.ok) return MR.toast(res.message, 'bad');
+    const blob = new Blob([res.csv], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = res.filename; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    MR.toast('Exported ' + res.rows + ' rows', 'ok');
+  }
+
+  function setLocation() {
+    let best = null, stop = false;
+    const m = MR.modal('Set classroom location',
+      '<p class="muted" style="margin:0;font-size:13.5px">Stand in the middle of the Morning Report classroom with this phone. Wait until accuracy is under ~30 m, then save.</p>' +
+      '<div class="geo-live" id="gLive">Waiting for location…</div>' +
+      '<label class="field"><span class="label">Allowed radius (metres)</span><input class="input" type="number" id="gRad" min="20" max="5000" value="' + (S.data.settings.radius || 150) + '"></label>' +
+      '<p class="hint">Indoors, GPS is often ±20–60 m. 150 m covers the classroom and nearby corridors; reduce it if people register from the car park.</p>',
+      [{ label: 'Cancel', onClick: c => { stop = true; c(); } }, { label: 'Save this location', cls: 'btn-primary', onClick: async (close, btn) => {
+        if (!best) return MR.toast('No location yet', 'bad');
+        MR.busy(btn, true, 'Saving…');
+        const force = best.accuracy > 100 && confirm('Accuracy is only ±' + best.accuracy + ' m. Save anyway?');
+        const res = await call('admin.setLocation', Object.assign({ lat: best.lat, lng: best.lng, accuracy: best.accuracy, radius: +$('#gRad').value, enable: true, force }, Auth.payload()));
+        MR.busy(btn, false);
+        if (!res.ok) return MR.toast(res.message, 'bad', 6000);
+        stop = true; close(); MR.toast('Classroom location saved (±' + res.accuracy + ' m, radius ' + res.radius + ' m)', 'ok', 5000); load(true);
+      } }]);
+    const loop = () => {
+      if (stop || !document.body.contains(m.el)) return;
+      MR.locate({ maxWait: 20000, goodEnough: 5, onProgress: f => {
+        best = f;
+        const live = document.getElementById('gLive');
+        if (live) live.innerHTML = '<b>' + f.lat.toFixed(6) + ', ' + f.lng.toFixed(6) + '</b><br>Accuracy ±' + f.accuracy + ' m ' +
+          (f.accuracy <= 30 ? '<span class="pill pill-ok">Good</span>' : f.accuracy <= 100 ? '<span class="pill pill-warn">Fair, wait a little</span>' : '<span class="pill pill-bad">Poor</span>');
+      } }).then(() => setTimeout(loop, 1500)).catch(e => {
+        const live = document.getElementById('gLive');
+        if (live) live.innerHTML = '<span style="color:var(--bad)">Location unavailable (' + esc(e.code) + '). Allow location access for this site and retry.</span>';
+      });
+    };
+    loop();
+  }
+
+  /* ---------- Helpers ---------- */
+  function shortDate(k, tiny) {
+    const d = new Date(k + 'T09:00:00Z');
+    return new Intl.DateTimeFormat('en-GB', tiny ? { day: 'numeric', month: 'short' } : { weekday: 'short', day: 'numeric', month: 'short' }).format(d);
+  }
+  function fmtTime(iso) { try { return MR.clock(new Date(iso), S.cfgPublic.timezone); } catch (e) { return ''; } }
+  function shift(days) { const d = new Date(S.date + 'T09:00:00Z'); d.setUTCDate(d.getUTCDate() + days); S.date = d.toISOString().slice(0, 10); load(); }
+
+  /* ---------- Wire up ---------- */
+  $('#prevDay').onclick = () => shift(-1);
+  $('#nextDay').onclick = () => shift(1);
+  $('#todayBtn').onclick = () => { S.date = S.data.today.date; load(); };
+  $('#date').onchange = e => { if (e.target.value) { S.date = e.target.value; load(); } };
+  $('#refresh').onclick = () => load();
+  $('#q').oninput = renderRegister;
+  $('#tq').oninput = renderTrainees;
+  $('#tLevel').onchange = renderTrainees;
+  $('#tRange').onchange = loadTrainees;
+  $('#addBtn').onclick = manualEntry;
+  const menu = (btn, list, fn, attr) => {
+    $(btn).onclick = e => { e.stopPropagation(); $$('.menu-list').forEach(m => { if (m !== $(list)) m.hidden = true; }); $(list).hidden = !$(list).hidden; };
+    $(list).onclick = e => { const b = e.target.closest('button'); if (b) { $(list).hidden = true; fn(b.dataset[attr]); } };
+  };
+  menu('#reportBtn', '#reportMenu', sendReport, 'r');
+  menu('#exportBtn', '#exportMenu', exportCsv, 'x');
+  document.addEventListener('click', () => $$('.menu-list').forEach(m => m.hidden = true));
+  $$('.tab').forEach(t => t.onclick = () => {
+    $$('.tab').forEach(x => x.setAttribute('aria-selected', String(x === t)));
+    $$('[data-pane]').forEach(p => p.hidden = p.dataset.pane !== t.dataset.tab);
+    if (t.dataset.tab === 'trainees' && !S.trainees) loadTrainees();
+  });
+
+  boot();
+})();
+</script>
+</body>
+</html>

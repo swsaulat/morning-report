@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classroom Poster · Morning Report</title>
+<meta name="author" content="Dr. Swaid Saulat">
+<meta name="robots" content="noindex">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root { --teal: #1F9AA3; --teal-d: #0E5F68; --teal-dd: #08414A; --gold: #BF9D68; --ink: #0F2A37; --mute: #5F7482; --line: #DCE6EB; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #DDE5E9; font-family: 'Inter', Arial, sans-serif; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .bar { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 10px 16px; background: #0F2A37; color: #fff; font-size: 13px; }
+  .bar input[type=url] { flex: 1; min-width: 220px; padding: 8px 10px; border-radius: 8px; border: 0; font: inherit; }
+  .bar button { padding: 8px 12px; border-radius: 8px; border: 0; font: inherit; font-weight: 600; cursor: pointer; background: #fff; color: var(--ink); }
+  .bar button.primary { background: var(--gold); color: #fff; }
+  .bar label { display: flex; align-items: center; gap: 6px; }
+  .hint { width: 100%; opacity: .7; font-size: 12px; }
+  .stage { padding: 24px 12px 60px; display: flex; justify-content: center; overflow-x: auto; }
+
+  .poster { width: 210mm; height: 297mm; background: #fff; position: relative; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.18); display: flex; flex-direction: column; flex: none; }
+  .head { background: linear-gradient(150deg, #13838C 0%, #0E5F68 50%, #08414A 100%); color: #fff; padding: 9mm 14mm 7mm; position: relative; text-align: center; }
+  .head::after { content: ''; position: absolute; right: -30mm; top: -30mm; width: 90mm; height: 90mm; border-radius: 50%; background: radial-gradient(circle, rgba(191,157,104,.35), transparent 65%); }
+  .logo-plate { display: inline-block; background: #fff; border-radius: 5mm; padding: 3.5mm 6mm; box-shadow: 0 2mm 6mm rgba(0,0,0,.15); position: relative; z-index: 1; }
+  .logo-plate img { height: 14mm; display: block; }
+  .eyebrow { margin-top: 5mm; font-size: 4.2mm; letter-spacing: .32em; text-transform: uppercase; font-weight: 700; color: #BFE6E9; position: relative; z-index: 1; }
+  .title { font-size: 15mm; line-height: 1; font-weight: 900; letter-spacing: -.03em; margin-top: 2.5mm; position: relative; z-index: 1; }
+  .rule { width: 22mm; height: 1.4mm; border-radius: 1mm; background: var(--gold); margin: 4mm auto 0; }
+
+  .body { flex: 1; padding: 7mm 14mm 0; text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .cta { font-size: 8.6mm; font-weight: 800; letter-spacing: -.02em; color: var(--teal-d); line-height: 1.12; }
+  .cta-sub { font-size: 4.4mm; color: var(--mute); margin-top: 2mm; }
+  .qr-card { margin-top: 6mm; padding: 5mm; border-radius: 7mm; background: #fff; border: 1.2mm solid var(--teal); box-shadow: 0 3mm 10mm rgba(14,95,104,.15); position: relative; }
+  .qr-card::before, .qr-card::after { content: ''; position: absolute; width: 14mm; height: 14mm; border: 1.6mm solid var(--gold); }
+  .qr-card::before { left: -4.5mm; top: -4.5mm; border-right: 0; border-bottom: 0; border-radius: 5mm 0 0 0; }
+  .qr-card::after { right: -4.5mm; bottom: -4.5mm; border-left: 0; border-top: 0; border-radius: 0 0 5mm 0; }
+  #qr { width: 84mm; height: 84mm; }
+  #qr svg { width: 100%; height: 100%; display: block; }
+  .url { margin-top: 3mm; font-size: 3.4mm; color: var(--mute); word-break: break-all; max-width: 150mm; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5mm; width: 100%; margin-top: 6mm; }
+  .step { text-align: center; }
+  .step .ic { width: 13mm; height: 13mm; margin: 0 auto 2.5mm; border-radius: 4mm; background: #E3F4F5; color: var(--teal-d); display: grid; place-items: center; position: relative; }
+  .step .ic svg { width: 7mm; height: 7mm; }
+  .step .n { position: absolute; top: -2mm; right: -2mm; width: 5.5mm; height: 5.5mm; border-radius: 50%; background: var(--gold); color: #fff; font-size: 3mm; font-weight: 800; display: grid; place-items: center; }
+  .step b { display: block; font-size: 4.2mm; }
+  .step span { display: block; font-size: 3.4mm; color: var(--mute); margin-top: .8mm; line-height: 1.35; }
+
+  .info { display: grid; grid-template-columns: repeat(3, 1fr); width: 100%; margin-top: 6mm; margin-bottom: 6mm; border: .4mm solid var(--line); border-radius: 5mm; overflow: hidden; }
+  .info > div { padding: 4mm 3mm; display: flex; align-items: center; gap: 2.5mm; justify-content: center; text-align: left; }
+  .info > div + div { border-left: .4mm solid var(--line); }
+  .info svg { width: 6.5mm; height: 6.5mm; flex: none; color: var(--teal); }
+  .info b { display: block; font-size: 3.9mm; color: var(--ink); }
+  .info span { display: block; font-size: 3mm; color: var(--mute); }
+
+  .foot { margin-top: auto; background: #F3F8F9; border-top: 1.2mm solid var(--gold); padding: 5mm 14mm; display: flex; align-items: center; justify-content: space-between; gap: 6mm; }
+  .foot .thanks { font-size: 6mm; font-weight: 800; color: var(--teal-d); letter-spacing: -.01em; }
+  .foot .inst { font-size: 3.2mm; color: var(--mute); text-align: right; line-height: 1.4; }
+  .foot .credit { display: block; font-size: 2.6mm; color: #8DA0AA; margin-top: 1mm; }
+
+  .demo-ribbon { display: none; }
+  [contenteditable] { outline: none; border-radius: 1.5mm; transition: box-shadow .15s; }
+  body.editing [contenteditable]:hover { box-shadow: 0 0 0 .5mm rgba(191,157,104,.9); cursor: text; }
+  body.editing [contenteditable]:focus { box-shadow: 0 0 0 .6mm var(--gold); background: rgba(191,157,104,.08); }
+
+  @page { size: A4 portrait; margin: 0; }
+  @media print {
+    html, body { background: #fff; height: 296mm; overflow: hidden; }
+    .bar { display: none; }
+    .stage { padding: 0; display: block; }
+    .poster { box-shadow: none; margin: 0; height: 296mm; }
+    body.editing [contenteditable]:hover, body.editing [contenteditable]:focus { box-shadow: none; background: none; }
+  }
+</style>
+</head>
+<body class="editing">
+<div class="bar">
+  <b style="margin-right:6px">Poster</b>
+  <input type="url" id="url" placeholder="Attendee page URL (QR target)" aria-label="QR target URL">
+  <label><input type="checkbox" id="edit" checked> Edit text</label>
+  <button id="reset" type="button">Reset text</button>
+  <button class="primary" id="print" type="button">Print / Save as PDF</button>
+  <div class="hint">Click any text on the poster to change it (saved in this browser). Print at 100% scale on A4, or choose A3 in the print dialog and "Fit to page".</div>
+</div>
+
+<div class="stage">
+  <article class="poster" id="poster">
+    <header class="head">
+      <div class="logo-plate"><img src="logo.svg" alt="Medical Services · Ministry of Interior"></div>
+      <div class="eyebrow" contenteditable data-k="eyebrow">Adult Emergency Department</div>
+      <div class="title" contenteditable data-k="title">Morning Report</div>
+      <div class="rule"></div>
+    </header>
+
+    <section class="body">
+      <div class="cta" contenteditable data-k="cta">Scan to register<br>your attendance</div>
+      <div class="cta-sub" contenteditable data-k="ctaSub">Use your phone camera · takes about 15 seconds</div>
+      <div class="qr-card"><div id="qr"></div></div>
+      <div class="url" id="urlText"></div>
+
+      <div class="steps">
+        <div class="step"><div class="ic"><span class="n">1</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 20h1M17 20v1"/></svg></div>
+          <b contenteditable data-k="s1t">Scan the QR</b><span contenteditable data-k="s1d">Open the camera and tap the link</span></div>
+        <div class="step"><div class="ic"><span class="n">2</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></div>
+          <b contenteditable data-k="s2t">Sign in with Google</b><span contenteditable data-k="s2d">Any personal Google account</span></div>
+        <div class="step"><div class="ic"><span class="n">3</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg></div>
+          <b contenteditable data-k="s3t">Confirm your details</b><span contenteditable data-k="s3d">Name, ID and training level</span></div>
+      </div>
+
+      <div class="info">
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <div><b contenteditable data-k="i1t" id="i1t">06:00 – 07:00</b><span contenteditable data-k="i1d">Riyadh time only</span></div></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          <div><b contenteditable data-k="i2t" id="i2t">In the classroom</b><span contenteditable data-k="i2d" id="i2d">Location verified (150 m)</span></div></div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div><b contenteditable data-k="i3t">Once per session</b><span contenteditable data-k="i3d">One registration per person</span></div></div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="thanks" contenteditable data-k="thanks">Thank you for your participation</div>
+      <div class="inst"><span contenteditable data-k="inst">Adult Emergency Department<br>Security Forces Hospital – Riyadh</span>
+        <span class="credit" contenteditable data-k="credit">Developed by Dr. Swaid Saulat</span></div>
+    </footer>
+  </article>
+</div>
+
+<script src="config.js"></script>
+<script src="core.js"></script>
+<script src="qrcode.js"></script>
+<script src="qr.js"></script>
+<script>
+(function () {
+  'use strict';
+  const KEY = 'mr.poster.v2';
+  const saved = MR.store(KEY) || {};
+  document.querySelectorAll('[data-k]').forEach(el => {
+    if (saved[el.dataset.k] !== undefined) el.innerHTML = saved[el.dataset.k];
+    el.addEventListener('input', () => { saved[el.dataset.k] = el.innerHTML; MR.store(KEY, saved); });
+  });
+
+  const urlIn = document.getElementById('url');
+  urlIn.value = saved.__url || MR.attendeeUrl();
+  function draw() {
+    const u = urlIn.value.trim() || MR.attendeeUrl();
+    document.getElementById('qr').innerHTML = MRQR.svg(u);
+    document.getElementById('urlText').textContent = u.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  }
+  urlIn.addEventListener('input', () => { saved.__url = urlIn.value.trim(); MR.store(KEY, saved); draw(); });
+  draw();
+
+  document.getElementById('edit').onchange = e => {
+    document.body.classList.toggle('editing', e.target.checked);
+    document.querySelectorAll('[data-k]').forEach(el => el.contentEditable = e.target.checked ? 'true' : 'false');
+  };
+  document.getElementById('reset').onclick = () => {
+    if (!confirm('Reset all poster text to the defaults?')) return;
+    MR.store(KEY, null); location.reload();
+  };
+  document.getElementById('print').onclick = () => window.print();
+
+  // Fill live values (window, radius, names) from the server unless the text was edited.
+  MR.call('config').then(c => {
+    if (!c.ok) return;
+    const set = (k, v) => { if (saved[k] === undefined) { const el = document.querySelector('[data-k="' + k + '"]'); if (el) el.innerHTML = v; } };
+    const s = c.nextSession || c.session;
+    set('i1t', MR.esc(s.start + ' – ' + s.end));
+    set('i1d', c.timezone === 'Asia/Riyadh' ? 'Riyadh time only' : MR.esc(c.timezone));
+    set('i2d', c.geofence.enabled ? 'Location verified (' + c.geofence.radius + ' m)' : 'Please register in person');
+    set('eyebrow', MR.esc(c.department));
+    set('title', MR.esc(c.program));
+    set('inst', MR.esc(c.department) + '<br>' + MR.esc(c.institution));
+  });
+})();
+</script>
+</body>
+</html>

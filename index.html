@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Morning Report Attendance</title>
+<meta name="description" content="Register your attendance for the Adult Emergency Department Morning Report.">
+<meta name="theme-color" content="#0E5F68">
+<meta name="author" content="Dr. Swaid Saulat">
+<meta name="robots" content="noindex">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon192.png">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+  body { background: radial-gradient(1200px 500px at 50% -200px, #D6EEF0 0%, transparent 70%), var(--bg); min-height: 100vh; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) body { background: radial-gradient(1200px 500px at 50% -200px, #0F3A42 0%, transparent 70%), var(--bg); } }
+  .shell { max-width: 520px; margin: 0 auto; padding: 0 14px calc(28px + env(safe-area-inset-bottom)); }
+  .top { display: flex; align-items: center; justify-content: space-between; padding: 14px 4px 12px; }
+  .top .logo { height: 40px; width: auto; }
+  .clock { font-weight: 700; font-size: 13px; color: var(--ink-2); background: var(--surface); border: 1px solid var(--line); padding: 6px 10px; border-radius: 999px; }
+
+  .hero {
+    position: relative; overflow: hidden; border-radius: 22px; padding: 22px 20px 20px; color: #fff;
+    background: linear-gradient(140deg, #13838C 0%, #0E5F68 48%, #08414A 100%);
+    box-shadow: 0 18px 40px rgba(8, 65, 74, .28);
+  }
+  .hero::after { content: ''; position: absolute; right: -60px; top: -60px; width: 220px; height: 220px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(191, 157, 104, .35), transparent 65%); }
+  .hero::before { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cpath d='M14 9v10M9 14h10' stroke='%23ffffff' stroke-opacity='.06' stroke-width='2'/%3E%3C/svg%3E"); }
+  .hero > * { position: relative; z-index: 1; }
+  .hero .eyebrow { color: #A9E0E4; }
+  .hero h1 { margin: 4px 0 2px; font-size: 30px; line-height: 1.1; letter-spacing: -.02em; font-weight: 800; }
+  .hero .date { color: #CDEBEE; font-size: 14px; }
+  .gold-rule { width: 44px; height: 3px; border-radius: 3px; background: var(--gold); margin: 12px 0 14px; }
+  .status { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.16); border-radius: 16px; padding: 14px; }
+  .status .pill { background: rgba(255,255,255,.95); }
+  .status-big { font-size: 34px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; margin-top: 10px; }
+  .status-sub { font-size: 13px; color: #D5EEF0; margin-top: 2px; }
+  .bar { height: 6px; border-radius: 6px; background: rgba(255,255,255,.18); margin-top: 12px; overflow: hidden; }
+  .bar > i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #E9D3AC, var(--gold)); border-radius: 6px; transition: width 1s linear; }
+
+  .step { margin-top: 14px; padding: 18px; transition: opacity .2s; }
+  .step.locked { opacity: .55; pointer-events: none; filter: saturate(.6); }
+  .step-h { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .badge { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; background: var(--teal-soft); color: var(--teal-d); }
+  .badge.done { background: var(--ok); color: #fff; }
+  .step-h h2 { margin: 0; font-size: 16.5px; letter-spacing: -.01em; }
+  .step-h p { margin: 1px 0 0; font-size: 13px; color: var(--mute); }
+
+  #gbtn { display: flex; justify-content: center; min-height: 44px; }
+  .gbtn-demo { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 46px; border-radius: 999px; border: 1px solid #DADCE0; background: #fff; color: #1F1F1F; font-weight: 600; cursor: pointer; }
+  .gbtn-demo small { color: #888; font-weight: 500; }
+  .privacy { display: flex; gap: 8px; font-size: 12.5px; color: var(--mute); margin-top: 12px; line-height: 1.45; }
+  .privacy svg { flex: none; width: 15px; height: 15px; margin-top: 2px; color: var(--teal); }
+
+  .who { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-2); margin-bottom: 16px; }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--teal-soft); color: var(--teal-d); display: grid; place-items: center; font-weight: 800; overflow: hidden; flex: none; }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .who .em { font-size: 13px; color: var(--mute); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .who .nm { font-weight: 700; font-size: 14.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .linkbtn { background: none; border: 0; color: var(--teal-d); font-weight: 600; font-size: 13px; cursor: pointer; padding: 6px; }
+
+  .loc { display: flex; gap: 12px; align-items: flex-start; padding: 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface-2); }
+  .loc-ic { flex: none; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--teal-soft); color: var(--teal-d); }
+  .loc-ic svg { width: 22px; height: 22px; }
+  .loc.ok { background: var(--ok-soft); border-color: transparent; } .loc.ok .loc-ic { background: var(--ok); color: #fff; }
+  .loc.warn { background: var(--warn-soft); border-color: transparent; } .loc.warn .loc-ic { background: var(--warn); color: #fff; }
+  .loc.bad { background: var(--bad-soft); border-color: transparent; } .loc.bad .loc-ic { background: var(--bad); color: #fff; }
+  .loc-t { font-weight: 700; font-size: 14.5px; }
+  .loc-d { font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+  .loc-help { font-size: 12.5px; margin-top: 8px; color: var(--ink-2); }
+  .loc-help ol { margin: 4px 0 0; padding-left: 18px; }
+  .radar { position: relative; }
+  .radar::after { content: ''; position: absolute; inset: -4px; border-radius: 14px; border: 2px solid var(--teal); opacity: 0; animation: ping 1.4s ease-out infinite; }
+  @keyframes ping { 0% { transform: scale(.85); opacity: .7; } 100% { transform: scale(1.25); opacity: 0; } }
+
+  .submit-wrap { margin-top: 16px; }
+  .fine { text-align: center; font-size: 12px; color: var(--mute); margin-top: 10px; }
+
+  /* Result ticket */
+  .ticket { margin-top: 14px; overflow: hidden; }
+  .ticket-top { padding: 28px 22px 22px; text-align: center; }
+  .seal { width: 88px; height: 88px; margin: 0 auto 14px; }
+  .seal circle.ring { stroke-dasharray: 260; stroke-dashoffset: 260; animation: draw .7s ease forwards; }
+  .seal path.tick { stroke-dasharray: 60; stroke-dashoffset: 60; animation: draw .45s .55s ease forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .ticket h2 { margin: 0; font-size: 24px; letter-spacing: -.02em; }
+  .ticket .lead { color: var(--mute); margin: 6px 0 0; font-size: 14px; }
+  .perf { position: relative; height: 22px; }
+  .perf::before { content: ''; position: absolute; left: 18px; right: 18px; top: 50%; border-top: 2px dashed var(--line); }
+  .perf i { position: absolute; top: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--bg); }
+  .perf i:first-child { left: -11px; } .perf i:last-child { right: -11px; }
+  .kv { padding: 8px 22px 6px; }
+  .kv > div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .kv > div:last-child { border-bottom: 0; }
+  .kv span { color: var(--mute); }
+  .kv b { text-align: right; font-weight: 650; }
+  .ticket-foot { padding: 14px 22px 20px; text-align: center; font-size: 12.5px; color: var(--mute); }
+  .big-time { font-size: 40px; font-weight: 800; letter-spacing: -.03em; color: var(--teal-d); margin-top: 10px; }
+  .fail-ic { width: 76px; height: 76px; margin: 0 auto 14px; border-radius: 24px; display: grid; place-items: center; }
+  .fail-ic svg { width: 38px; height: 38px; }
+  .fail-msg { font-size: 15px; color: var(--ink-2); margin: 10px 0 0; line-height: 1.55; }
+  .actions { display: grid; gap: 10px; padding: 0 22px 22px; }
+
+  footer { text-align: center; color: var(--mute); font-size: 12px; margin-top: 26px; line-height: 1.6; }
+  .test-banner { background: var(--bad); color: #fff; text-align: center; font-size: 12.5px; font-weight: 700; padding: 8px; border-radius: 10px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top">
+    <img class="logo light-logo" src="logo.svg" alt="Security Forces Hospital – Medical Services, Ministry of Interior">
+    <img class="logo dark-logo" src="logo-w.svg" alt="">
+    <span class="clock num" id="clock" aria-label="Current time">--:--</span>
+  </div>
+
+  <section class="hero" aria-live="polite">
+    <div class="eyebrow" id="dept">Adult Emergency Department</div>
+    <h1 id="program">Morning Report</h1>
+    <div class="date" id="dateLine"><span class="skel" style="display:inline-block;width:180px;height:14px"></span></div>
+    <div class="gold-rule"></div>
+    <div class="status" id="status">
+      <span class="pill pill-mute"><span class="dot"></span>Loading…</span>
+      <div class="status-big num">&nbsp;</div>
+      <div class="status-sub">&nbsp;</div>
+    </div>
+  </section>
+  <div id="testBanner" class="test-banner" hidden>TEST MODE: no Google sign-in. Not for live use.</div>
+
+  <main id="flow">
+    <!-- Step 1 -->
+    <section class="card step" id="stepAuth">
+      <div class="step-h">
+        <div class="badge" id="b1">1</div>
+        <div><h2>Verify your identity</h2><p>Sign in with any Google account</p></div>
+      </div>
+      <div id="authBox">
+        <div id="gbtn"><div class="skel" style="width:100%;height:44px;border-radius:999px"></div></div>
+        <div class="privacy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>We only receive your name and email address to confirm it's you. Nothing is posted and no other Google data is accessed.</span>
+        </div>
+      </div>
+      <div id="whoBox" hidden></div>
+    </section>
+
+    <!-- Step 2 -->
+    <section class="card step locked" id="stepForm">
+      <div class="step-h">
+        <div class="badge" id="b2">2</div>
+        <div><h2>Your details</h2><p>Saved on this phone for next time</p></div>
+      </div>
+      <form id="form" novalidate autocomplete="on">
+        <label class="field">
+          <span class="label">Full name</span>
+          <input class="input" id="fullName" name="name" autocomplete="name" autocapitalize="words" placeholder="e.g. Sara Ahmed" maxlength="80" required>
+          <div class="err-text" data-err="fullName" hidden></div>
+        </label>
+        <label class="field">
+          <span class="label" id="idLabel">Staff / Badge ID</span>
+          <input class="input num" id="staffId" name="staffId" inputmode="text" autocapitalize="characters" autocomplete="off" placeholder="e.g. 123456" maxlength="30" required>
+          <div class="err-text" data-err="staffId" hidden></div>
+        </label>
+        <div class="field">
+          <span class="label">Training level</span>
+          <div class="chips" id="levels" role="group" aria-label="Training level"></div>
+          <div class="err-text" data-err="level" hidden></div>
+        </div>
+        <label class="check" style="margin-top:14px"><input type="checkbox" id="remember" checked> Remember my details on this phone</label>
+      </form>
+    </section>
+
+    <!-- Step 3 -->
+    <section class="card step locked" id="stepLoc">
+      <div class="step-h">
+        <div class="badge" id="b3">3</div>
+        <div><h2>Location check</h2><p id="locSub">Confirms you are in the classroom</p></div>
+      </div>
+      <div id="locBox"></div>
+    </section>
+
+    <div class="submit-wrap">
+      <button class="btn btn-primary btn-lg btn-block" id="submitBtn" type="button" disabled>Register attendance</button>
+      <div class="fine" id="fine">One registration per person per session.</div>
+    </div>
+  </main>
+
+  <section id="result" hidden></section>
+
+  <footer>
+    <div id="footInst">Security Forces Hospital – Riyadh</div>
+    <div>Morning Report Attendance System</div>
+    <div class="credit">Developed by <b>Dr. Swaid Saulat</b><br>
+      Patient Flow Management System · powered by Ruqelo<br>
+      <a href="https://patientflowms.com" target="_blank" rel="noopener">patientflowms.com</a><span class="sep">·</span><a href="https://ruqelo.com" target="_blank" rel="noopener">ruqelo.com</a></div>
+  </footer>
+</div>
+
+<script src="config.js"></script>
+<script src="core.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+(function () {
+  'use strict';
+  const { $, esc, call, Auth } = MR;
+  const S = { cfg: null, me: null, fix: null, locating: null, locErr: null, level: null, liveCode: null, busy: false, done: false };
+  const IC = {
+    pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.2 4.2L19 7"/></svg>',
+    warn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>',
+    x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>',
+    qr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg>',
+    wifi: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 8.8a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 20h.01"/></svg>'
+  };
+
+  /* ---------- Boot ---------- */
+  async function boot() {
+    const k = MR.qs.get('k');
+    try {
+      if (k) { sessionStorage.setItem('mr.k', k); history.replaceState(null, '', location.pathname + (MR.DEMO && MR.qs.has('demo') ? '?demo' : '')); }
+      S.liveCode = sessionStorage.getItem('mr.k') || '';
+    } catch (e) { S.liveCode = k || ''; }
+
+    const res = await call('config');
+    if (!res.ok) return fatal(res.message || 'Could not load the attendance system.');
+    S.cfg = res;
+    applyConfig();
+    tick(); setInterval(tick, 1000);
+
+    if (res.authMode === 'TEST') return mountTestAuth();
+    if (Auth.restore()) onSignedIn(Auth.user);
+    else Auth.mount($('#gbtn'), res.googleClientId, onSignedIn);
+  }
+
+  function applyConfig() {
+    const c = S.cfg;
+    $('#dept').textContent = c.department;
+    $('#program').textContent = c.program;
+    $('#footInst').textContent = c.department + ' · ' + c.institution;
+    document.title = c.program + ' Attendance · ' + c.institution;
+    $('#dateLine').textContent = 'Attendance · ' + c.session.label;
+    $('#idLabel').textContent = c.staffIdLabel;
+    $('#testBanner').hidden = c.authMode !== 'TEST';
+    $('#levels').innerHTML = c.levels.map(l => '<button type="button" class="chip" aria-pressed="false" data-level="' + esc(l) + '">' + esc(l) + '</button>').join('');
+    $('#levels').onclick = e => { const b = e.target.closest('.chip'); if (b) setLevel(b.dataset.level); };
+    if (!c.geofence.enabled) { $('#stepLoc').hidden = true; }
+    else $('#locSub').textContent = 'You must be within ' + c.geofence.radius + ' m of the ' + c.classroomName;
+    if (c.requireLiveCode && !S.liveCode) {
+      $('#fine').innerHTML = '<span style="color:var(--warn);font-weight:600">Scan the live QR code on the classroom screen to register.</span>';
+    }
+    renderLoc();
+  }
+
+  function fatal(msg) {
+    $('#flow').hidden = true;
+    showResult('fail', { code: 'CONFIG', title: 'Unable to load', message: msg, retry: () => location.reload() });
+  }
+
+  /* ---------- Clock & window state ---------- */
+  function windowState() {
+    const s = S.cfg.session, t = MR.now().getTime();
+    if (!s.isSessionDay) return s.state;
+    if (t < new Date(s.startAt).getTime()) return 'upcoming';
+    if (t <= new Date(s.closeAt).getTime()) return 'open';
+    return 'closed';
+  }
+
+  let lastDate = null;
+  function tick() {
+    const c = S.cfg, s = c.session, now = MR.now();
+    $('#clock').textContent = MR.clock(now, c.timezone);
+    const today = new Intl.DateTimeFormat('en-CA', { timeZone: c.timezone }).format(now);
+    if (lastDate && today !== lastDate && today !== s.date) { location.reload(); return; }
+    lastDate = today;
+
+    const st = windowState();
+    const startT = new Date(s.startAt).getTime(), closeT = new Date(s.closeAt).getTime(), t = now.getTime();
+    const next = c.nextSession;
+    const nextTxt = next ? 'Next session: ' + next.label.replace(/,? \d{4}$/, '') + ' · ' + next.start : '';
+    let pill, big, sub, pct = 0;
+    if (st === 'open') {
+      pill = '<span class="pill pill-ok pulse"><span class="dot"></span>Registration open</span>';
+      big = MR.countdown(closeT - t); sub = 'left · closes at ' + s.end + ' (' + tzName() + ')';
+      pct = Math.min(100, Math.max(0, (t - startT) / (closeT - startT) * 100));
+    } else if (st === 'upcoming') {
+      pill = '<span class="pill pill-info"><span class="dot"></span>Opens at ' + esc(s.start) + '</span>';
+      big = MR.countdown(startT - t); sub = 'until registration opens · window ' + s.start + '–' + s.end;
+    } else if (st === 'closed') {
+      pill = '<span class="pill pill-bad"><span class="dot"></span>Registration closed</span>';
+      big = 'Closed at ' + s.end; sub = nextTxt || 'See you at the next session';
+      pct = 100;
+    } else {
+      pill = '<span class="pill pill-mute"><span class="dot"></span>' + (st === 'cancelled' ? 'Session cancelled' : 'No session today') + '</span>';
+      big = st === 'cancelled' ? 'Cancelled' : 'No session'; sub = (s.note ? s.note + ' · ' : '') + (nextTxt || '');
+    }
+    $('#status').innerHTML = pill + '<div class="status-big num">' + esc(big) + '</div><div class="status-sub">' + esc(sub) + '</div>' +
+      (st === 'open' || st === 'closed' ? '<div class="bar"><i style="width:' + pct.toFixed(1) + '%"></i></div>' : '');
+    updateSubmit(st);
+  }
+  const tzName = () => S.cfg.timezone === 'Asia/Riyadh' ? 'Riyadh time' : S.cfg.timezone;
+
+  function updateSubmit(st) {
+    const b = $('#submitBtn');
+    if (S.busy) return;
+    st = st || windowState();
+    const signed = !!(Auth.token || Auth.testEmail);
+    if (st === 'open') { b.textContent = signed ? 'Register attendance' : 'Sign in to register'; b.disabled = !signed; }
+    else if (st === 'upcoming') { b.textContent = 'Opens at ' + S.cfg.session.start; b.disabled = true; }
+    else if (st === 'closed') { b.textContent = 'Registration closed'; b.disabled = true; }
+    else { b.textContent = 'No session today'; b.disabled = true; }
+  }
+
+  /* ---------- Auth ---------- */
+  function mountTestAuth() {
+    $('#gbtn').innerHTML = '<label class="field"><span class="label">Email (test mode)</span><input class="input" id="testEmail" type="email" placeholder="name@example.com"></label>' +
+      '<button class="btn btn-ghost btn-block" id="testGo" style="margin-top:10px">Continue</button>';
+    $('#testGo').onclick = () => {
+      const v = $('#testEmail').value.trim();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) return MR.toast('Enter a valid email', 'bad');
+      Auth.testEmail = v.toLowerCase();
+      onSignedIn({ email: Auth.testEmail, name: '', picture: '' });
+    };
+  }
+
+  async function onSignedIn(user) {
+    $('#authBox').hidden = true;
+    const initials = (user.name || user.email || '?').split(/[\s@.]/).filter(Boolean).slice(0, 2).map(x => x[0].toUpperCase()).join('');
+    $('#whoBox').hidden = false;
+    $('#whoBox').innerHTML = '<div class="who" style="margin:0"><div class="avatar">' + (user.picture ? '<img alt="" referrerpolicy="no-referrer" src="' + esc(user.picture) + '">' : esc(initials)) + '</div>' +
+      '<div class="grow"><div class="nm">' + esc(user.name || 'Signed in') + '</div><div class="em">' + esc(user.email) + '</div></div>' +
+      '<button class="linkbtn" id="switchBtn" type="button">Switch</button></div>';
+    $('#switchBtn').onclick = switchAccount;
+    $('#b1').classList.add('done'); $('#b1').innerHTML = IC.check.replace('stroke-width="2.6"', 'stroke-width="3" width="16" height="16"');
+    $('#stepForm').classList.remove('locked');
+    $('#stepLoc').classList.remove('locked');
+    updateSubmit();
+
+    const saved = MR.store('mr.profile');
+    if (saved) fill(saved);
+    if (S.cfg.geofence.enabled && !S.fix && !S.locating) startLocate();
+
+    const me = await call('me', Auth.payload());
+    if (!me.ok) {
+      if (/^AUTH_/.test(me.code)) { MR.toast(me.message, 'bad'); return switchAccount(); }
+      return; // non-fatal: they can still try to register
+    }
+    S.me = me;
+    if (me.record) return showResult('already', { record: me.record });
+    if (me.profile) fill(me.profile);
+    else if (!saved && user.name && !$('#fullName').value) $('#fullName').value = user.name;
+  }
+
+  function switchAccount() {
+    Auth.clear(); Auth.testEmail = null;
+    $('#whoBox').hidden = true; $('#authBox').hidden = false;
+    $('#b1').classList.remove('done'); $('#b1').textContent = '1';
+    $('#stepForm').classList.add('locked'); $('#stepLoc').classList.add('locked');
+    updateSubmit();
+    if (S.cfg.authMode === 'TEST') mountTestAuth();
+    else Auth.mount($('#gbtn'), S.cfg.googleClientId, onSignedIn, { autoSelect: false, oneTap: false });
+  }
+
+  /* ---------- Form ---------- */
+  function fill(p) {
+    if (p.fullName) $('#fullName').value = p.fullName;
+    if (p.staffId) $('#staffId').value = p.staffId;
+    if (p.level && S.cfg.levels.indexOf(p.level) >= 0) setLevel(p.level);
+  }
+  function setLevel(l) {
+    S.level = l;
+    MR.$$('#levels .chip').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.level === l)));
+    fieldErr('level', '');
+  }
+  function fieldErr(name, msg) {
+    const e = document.querySelector('[data-err="' + name + '"]');
+    if (e) { e.textContent = msg; e.hidden = !msg; }
+    const inp = document.getElementById(name);
+    if (inp && inp.classList) inp.classList.toggle('invalid', !!msg);
+    if (msg && inp && inp.focus) inp.focus();
+  }
+  ['fullName', 'staffId'].forEach(id => document.getElementById(id).addEventListener('input', () => fieldErr(id, '')));
+
+  function validate() {
+    const name = $('#fullName').value.trim().replace(/\s+/g, ' ');
+    const id = $('#staffId').value.replace(/\s+/g, '').toUpperCase();
+    let re; try { re = new RegExp(S.cfg.staffIdPattern); } catch (e) { re = /^[A-Za-z0-9-]{3,20}$/; }
+    if (name.split(' ').length < 2 || name.replace(/[^\p{L}]/gu, '').length < 3) { fieldErr('fullName', 'Please enter your first and last name.'); return null; }
+    if (!re.test(id)) { fieldErr('staffId', 'Please enter a valid ' + S.cfg.staffIdLabel + '.'); return null; }
+    if (!S.level) { fieldErr('level', 'Please choose your training level.'); $('#levels').scrollIntoView({ behavior: 'smooth', block: 'center' }); return null; }
+    return { fullName: name, staffId: id, level: S.level };
+  }
+
+  /* ---------- Location ---------- */
+  function startLocate() {
+    S.locErr = null;
+    S.locating = MR.locate({ maxWait: 15000, goodEnough: 20, onProgress: f => { S.fix = f; renderLoc(); } })
+      .then(f => { S.fix = f; return f; })
+      .catch(e => { S.locErr = e; return null; })
+      .finally(() => { S.locating = null; renderLoc(); });
+    renderLoc();
+    return S.locating;
+  }
+
+  function judge(fix) {
+    const g = S.cfg.geofence;
+    const d = MR.distanceM(fix.lat, fix.lng, g.lat, g.lng);
+    if (fix.accuracy > g.maxAccuracy) return { cls: 'warn', d };
+    return { cls: d <= g.radius + Math.min(fix.accuracy, g.buffer) ? 'ok' : 'bad', d };
+  }
+
+  function renderLoc() {
+    const box = $('#locBox');
+    if (!S.cfg || !S.cfg.geofence.enabled) return;
+    const retry = '<button class="btn btn-ghost btn-sm" id="locRetry" type="button" style="margin-top:10px">Check again</button>';
+    let html;
+    if (S.locErr && !S.fix) {
+      const c = S.locErr.code;
+      const title = c === 'DENIED' ? 'Location access is blocked' : c === 'INSECURE' ? 'Secure connection required' : c === 'UNSUPPORTED' ? 'Location not supported' : 'Could not get your location';
+      html = '<div class="loc bad"><div class="loc-ic">' + IC.pin + '</div><div class="grow"><div class="loc-t">' + title + '</div>' +
+        '<div class="loc-help">' + locHelp(c) + '</div>' + retry + '</div></div>';
+    } else if (S.fix) {
+      const j = judge(S.fix);
+      const live = S.locating ? ' · improving…' : '';
+      const t = j.cls === 'ok' ? 'You are in the classroom area' : j.cls === 'warn' ? 'Location signal is weak' : 'You seem to be outside the classroom';
+      const d = j.cls === 'warn'
+        ? 'Accuracy ±' + MR.fmtDist(S.fix.accuracy) + '. Turn on Wi-Fi and Precise Location, or move near a window.'
+        : '≈ ' + MR.fmtDist(j.d) + ' from the ' + esc(S.cfg.classroomName) + ' (±' + MR.fmtDist(S.fix.accuracy) + ')' + live;
+      html = '<div class="loc ' + j.cls + '"><div class="loc-ic">' + (j.cls === 'ok' ? IC.check : j.cls === 'warn' ? IC.wifi : IC.pin) + '</div><div class="grow"><div class="loc-t">' + t + '</div>' +
+        '<div class="loc-d">' + d + '</div>' + (j.cls !== 'ok' && !S.locating ? retry : '') + '</div></div>';
+    } else if (S.locating) {
+      html = '<div class="loc"><div class="loc-ic radar">' + IC.pin + '</div><div class="grow"><div class="loc-t">Finding your location…</div><div class="loc-d">Allow location access if your phone asks.</div></div></div>';
+    } else {
+      html = '<div class="loc"><div class="loc-ic">' + IC.pin + '</div><div class="grow"><div class="loc-t">Location will be checked</div><div class="loc-d">After you sign in, allow location access when asked.</div></div></div>';
+    }
+    box.innerHTML = html;
+    const r = $('#locRetry'); if (r) r.onclick = () => { S.fix = null; startLocate(); };
+    $('#b3').classList.toggle('done', !!(S.fix && judge(S.fix).cls === 'ok'));
+  }
+
+  function locHelp(code) {
+    if (code === 'DENIED') {
+      return MR.isIOS()
+        ? 'To allow it on iPhone:<ol><li>Open <b>Settings → Privacy &amp; Security → Location Services</b> and make sure it is <b>On</b>.</li><li>Scroll to your browser (<b>Safari Websites</b> or <b>Chrome</b>) → <b>While Using the App</b>, and turn on <b>Precise Location</b>.</li><li>Come back and tap <b>Check again</b> (reload if needed).</li></ol>'
+        : 'To allow it on Android / Chrome:<ol><li>Tap the <b>lock / settings icon</b> next to the address bar → <b>Permissions → Location → Allow</b>.</li><li>Make sure phone <b>Location</b> is switched on (pull down quick settings).</li><li>Tap <b>Check again</b>.</li></ol>';
+    }
+    if (code === 'INSECURE') return 'Open this page using its https:// address (scan the QR code again).';
+    if (code === 'UNSUPPORTED') return 'Your browser cannot share location. Open this page in Chrome or Safari.';
+    return 'Make sure Location (GPS) is on and Wi-Fi is enabled, then try again. Indoors, moving near a window helps.';
+  }
+
+  /* ---------- Submit ---------- */
+  $('#submitBtn').onclick = async () => {
+    if (S.busy) return;
+    const f = validate();
+    if (!f) return;
+    const btn = $('#submitBtn');
+    S.busy = true;
+    try {
+      let fix = S.fix;
+      if (S.cfg.geofence.enabled) {
+        if (!fix && S.locating) { MR.busy(btn, true, 'Getting your location…'); fix = await S.locating; }
+        if (!fix && !S.locating) { MR.busy(btn, true, 'Getting your location…'); fix = await startLocate(); }
+        if (!fix) {
+          MR.busy(btn, false); S.busy = false; updateSubmit();
+          $('#stepLoc').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return MR.toast('Location is needed to register. See the instructions above.', 'bad', 5000);
+        }
+      }
+      MR.busy(btn, true, 'Registering…');
+      const payload = Object.assign({}, f, Auth.payload(), {
+        lat: fix ? fix.lat : null, lng: fix ? fix.lng : null, accuracy: fix ? fix.accuracy : null,
+        liveCode: S.liveCode || '', device: MR.deviceLabel()
+      });
+      const res = await call('register', payload);
+      if ($('#remember').checked) MR.store('mr.profile', f); else MR.store('mr.profile', null);
+      if (res.ok) {
+        try { sessionStorage.removeItem('mr.k'); } catch (e) { /* ignore */ }
+        if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
+        return showResult('ok', res);
+      }
+      if (res.code === 'ALREADY_REGISTERED') return showResult('already', res.details || {});
+      if (res.code === 'VALIDATION' && res.details && res.details.field) { fieldErr(res.details.field, res.message); return; }
+      if (/^AUTH_/.test(res.code)) { MR.toast(res.message, 'bad', 5000); switchAccount(); return; }
+      showResult('fail', res);
+    } finally {
+      S.busy = false; MR.busy(btn, false); if (!S.done) updateSubmit();
+    }
+  };
+
+  /* ---------- Results ---------- */
+  const FAIL = {
+    WINDOW_CLOSED: ['Registration closed', 'clock', 'bad'],
+    WINDOW_NOT_OPEN: ['Not open yet', 'clock', 'info'],
+    NO_SESSION: ['No session today', 'clock', 'info'],
+    GEO_OUTSIDE: ['Outside the classroom area', 'pin', 'bad', true],
+    GEO_WEAK: ['Location signal too weak', 'wifi', 'warn', true],
+    GEO_REQUIRED: ['Location needed', 'pin', 'warn', true],
+    CODE_EXPIRED: ['QR code expired', 'qr', 'warn'],
+    CODE_REQUIRED: ['Scan the classroom QR code', 'qr', 'warn'],
+    ID_ALREADY_USED: ['ID already registered today', 'user', 'bad'],
+    ID_LINKED_ELSEWHERE: ['ID linked to another account', 'user', 'bad'],
+    ACCOUNT_LINKED_ELSEWHERE: ['Account linked to another ID', 'user', 'bad'],
+    NOT_ON_ROSTER: ['Not on the roster', 'user', 'bad'],
+    RATE_LIMIT: ['Too many attempts', 'warn', 'warn'],
+    BUSY: ['System busy', 'warn', 'warn', true],
+    NETWORK: ['Connection problem', 'wifi', 'warn', true],
+    BAD_RESPONSE: ['Connection problem', 'wifi', 'warn', true],
+    SERVER_ERROR: ['Something went wrong', 'warn', 'warn', true],
+    NOT_CONFIGURED: ['Not configured yet', 'warn', 'warn']
+  };
+
+  function showResult(kind, data) {
+    S.done = kind !== 'fail';
+    const box = $('#result');
+    $('#flow').hidden = true;
+    box.hidden = false;
+    let html;
+    if (kind === 'ok' || kind === 'already') {
+      const r = data.record || {};
+      const loc = r.location === 'Passed' ? 'Verified' + (r.distance !== null && r.distance !== undefined ? ' · ' + r.distance + ' m' : '') : (r.location || '—');
+      html = '<div class="card ticket">' +
+        '<div class="ticket-top">' + seal(kind === 'ok' ? 'var(--ok)' : 'var(--teal)') +
+        '<h2>' + (kind === 'ok' ? 'You’re registered' : 'Already registered') + '</h2>' +
+        '<p class="lead">' + (kind === 'ok' ? 'Thank you for attending ' + esc(S.cfg ? S.cfg.program : 'Morning Report') + '.' : 'Your attendance for today is already recorded.') + '</p>' +
+        '<div class="big-time num">' + esc(String(r.time || '').slice(0, 5)) + '</div>' +
+        '<div class="muted" style="font-size:13px">' + esc(r.dateLabel || r.date || '') + '</div></div>' +
+        '<div class="perf"><i></i><i></i></div>' +
+        '<div class="kv">' +
+        kv('Name', r.fullName) + kv(S.cfg ? S.cfg.staffIdLabel : 'Staff ID', r.staffId) + kv('Training level', r.level) +
+        kv('Registered at', String(r.time || '') + ' · ' + (S.cfg ? tzName() : '')) +
+        (S.cfg && S.cfg.geofence.enabled ? kv('Location', loc) : '') +
+        (r.position ? kv('Attendee today', '#' + r.position) : '') +
+        kv('Reference', r.recordId) +
+        '</div><div class="ticket-foot">Take a screenshot if you need proof of attendance.</div></div>';
+    } else {
+      const f = FAIL[data.code] || [data.title || 'Registration not accepted', 'x', 'bad'];
+      const tone = { bad: ['var(--bad-soft)', 'var(--bad)'], warn: ['var(--warn-soft)', 'var(--warn)'], info: ['var(--teal-soft)', 'var(--teal-d)'] }[f[2]];
+      const canRetry = f[3] || data.retry;
+      html = '<div class="card ticket"><div class="ticket-top">' +
+        '<div class="fail-ic" style="background:' + tone[0] + ';color:' + tone[1] + '">' + IC[f[1]] + '</div>' +
+        '<h2>' + esc(f[0]) + '</h2><p class="fail-msg">' + esc(data.message || '') + '</p></div>' +
+        '<div class="actions">' + (canRetry ? '<button class="btn btn-primary btn-lg" id="rRetry">Try again</button>' : '') +
+        (data.code !== 'CONFIG' ? '<button class="btn btn-ghost" id="rBack">Back</button>' : '') + '</div></div>';
+    }
+    box.innerHTML = html;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const back = () => { box.hidden = true; $('#flow').hidden = false; S.done = false; updateSubmit(); };
+    const rb = $('#rBack'); if (rb) rb.onclick = back;
+    const rr = $('#rRetry');
+    if (rr) rr.onclick = () => {
+      if (data.retry) return data.retry();
+      back();
+      if (/^GEO_/.test(data.code)) { S.fix = null; startLocate(); }
+      setTimeout(() => $('#submitBtn').click(), /^GEO_/.test(data.code) ? 0 : 50);
+    };
+  }
+  function kv(k, v) { return '<div><span>' + esc(k) + '</span><b>' + esc(v === undefined || v === null || v === '' ? '—' : v) + '</b></div>'; }
+  function seal(color) {
+    return '<svg class="seal" viewBox="0 0 88 88"><circle cx="44" cy="44" r="40" fill="none" stroke="' + color + '" stroke-opacity=".15" stroke-width="8"/>' +
+      '<circle class="ring" cx="44" cy="44" r="40" fill="none" stroke="' + color + '" stroke-width="5" stroke-linecap="round" transform="rotate(-90 44 44)"/>' +
+      '<path class="tick" d="M28 45l10 10 22-22" fill="none" stroke="' + color + '" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+
+  boot();
+})();
+</script>
+</body>
+</html>

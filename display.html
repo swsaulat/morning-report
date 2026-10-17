@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classroom Display · Morning Report</title>
+<meta name="author" content="Dr. Swaid Saulat">
+<meta name="robots" content="noindex">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root { --gold: #BF9D68; --teal: #34B5BE; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif; color: #fff; overflow: hidden;
+    background: radial-gradient(1200px 700px at 85% -10%, rgba(191,157,104,.22), transparent 60%),
+                radial-gradient(900px 600px at -10% 110%, rgba(52,181,190,.25), transparent 60%),
+                linear-gradient(150deg, #0B4F57 0%, #08363D 55%, #061F24 100%);
+  }
+  .demo-ribbon { position: fixed; top: 10px; right: -34px; transform: rotate(45deg); background: var(--gold); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .1em; padding: 4px 40px; }
+  .screen { height: 100vh; display: grid; grid-template-rows: auto 1fr auto; padding: 3.2vh 4vw; gap: 2.5vh; }
+  .top { display: flex; align-items: center; gap: 2vw; }
+  .plate { background: #fff; border-radius: 1.4vh; padding: 1vh 1.6vh; }
+  .plate img { height: 5.4vh; display: block; }
+  .top .dept { font-size: 1.8vh; letter-spacing: .3em; text-transform: uppercase; color: #A9E0E4; font-weight: 700; }
+  .top .inst { font-size: 1.7vh; color: #CFE6E8; margin-top: .4vh; }
+  .top .clock { margin-left: auto; font-size: 6vh; font-weight: 800; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .main { display: grid; grid-template-columns: 1.15fr 1fr; gap: 4vw; align-items: center; min-height: 0; }
+  .eyebrow { font-size: 2vh; letter-spacing: .28em; text-transform: uppercase; color: var(--gold); font-weight: 800; }
+  h1 { font-size: 10vh; line-height: .95; margin: 1.2vh 0 0; letter-spacing: -.04em; font-weight: 900; }
+  .date { font-size: 2.6vh; color: #CFE6E8; margin-top: 1.4vh; }
+  .state { margin-top: 4vh; padding: 3vh 3vh; border-radius: 2.4vh; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); }
+  .pill { display: inline-flex; align-items: center; gap: 1vh; font-size: 2vh; font-weight: 700; padding: .8vh 1.6vh; border-radius: 999px; background: #fff; color: #0E5F68; }
+  .pill .dot { width: 1.1vh; height: 1.1vh; border-radius: 50%; background: currentColor; }
+  .pill.open { color: #12805C; } .pill.open .dot { animation: pulse 1.6s infinite; }
+  .pill.closed { color: #B42318; }
+  @keyframes pulse { 50% { opacity: .35; } }
+  .big { font-size: 11vh; font-weight: 900; letter-spacing: -.04em; line-height: 1; margin-top: 2vh; font-variant-numeric: tabular-nums; }
+  .sub { font-size: 2.3vh; color: #CFE6E8; margin-top: .8vh; }
+  .bar { height: 1vh; border-radius: 1vh; background: rgba(255,255,255,.15); margin-top: 2.4vh; overflow: hidden; }
+  .bar i { display: block; height: 100%; background: linear-gradient(90deg, #E9D3AC, var(--gold)); border-radius: 1vh; transition: width 1s linear; }
+  .count { display: flex; align-items: baseline; gap: 1.6vh; margin-top: 3vh; }
+  .count b { font-size: 8vh; font-weight: 900; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .count span { font-size: 2.4vh; color: #CFE6E8; }
+  .recent { display: flex; flex-wrap: wrap; gap: 1vh; margin-top: 1.4vh; }
+  .recent span { font-size: 1.9vh; padding: .6vh 1.3vh; border-radius: 999px; background: rgba(255,255,255,.1); animation: pop .4s ease; }
+  @keyframes pop { from { transform: scale(.8); opacity: 0; } to { transform: none; opacity: 1; } }
+
+  .qrbox { justify-self: center; text-align: center; }
+  .qr-card { background: #fff; border-radius: 3vh; padding: 2.4vh; box-shadow: 0 3vh 8vh rgba(0,0,0,.35); position: relative; }
+  .qr-card::before, .qr-card::after { content: ''; position: absolute; width: 6vh; height: 6vh; border: .7vh solid var(--gold); }
+  .qr-card::before { left: -1.8vh; top: -1.8vh; border-right: 0; border-bottom: 0; border-radius: 2vh 0 0 0; }
+  .qr-card::after { right: -1.8vh; bottom: -1.8vh; border-left: 0; border-top: 0; border-radius: 0 0 2vh 0; }
+  #qr { width: min(52vh, 38vw); height: min(52vh, 38vw); }
+  #qr svg { width: 100%; height: 100%; display: block; }
+  .scan { font-size: 3.4vh; font-weight: 800; margin-top: 3vh; letter-spacing: -.01em; }
+  .scan-sub { font-size: 2vh; color: #CFE6E8; margin-top: .6vh; }
+  .live { display: inline-flex; align-items: center; gap: .8vh; margin-top: 1.2vh; font-size: 1.7vh; color: var(--gold); font-weight: 700; }
+  .ring { width: 2.2vh; height: 2.2vh; transform: rotate(-90deg); }
+  .qr-off { width: min(52vh, 38vw); height: min(52vh, 38vw); display: grid; place-items: center; color: #5F7482; font-size: 2.6vh; font-weight: 700; padding: 4vh; text-align: center; }
+
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2vw; border-top: 1px solid rgba(255,255,255,.12); padding-top: 2.4vh; }
+  .steps div { display: flex; gap: 1.4vh; align-items: center; font-size: 2vh; color: #DCEFF1; }
+  .steps b { flex: none; width: 4vh; height: 4vh; border-radius: 1.2vh; background: rgba(191,157,104,.18); color: var(--gold); display: grid; place-items: center; font-size: 2vh; }
+  .fs { position: fixed; right: 1.4vh; bottom: 1.4vh; background: rgba(255,255,255,.1); color: #fff; border: 0; padding: .8vh 1.4vh; border-radius: 1vh; font: inherit; font-size: 1.5vh; cursor: pointer; opacity: .5; }
+  .fs:hover { opacity: 1; }
+  .err { position: fixed; left: 50%; bottom: 2vh; transform: translateX(-50%); background: #8E2A20; padding: 1vh 2vh; border-radius: 1vh; font-size: 1.8vh; }
+  .credit-d { position: fixed; left: 0; right: 0; bottom: .8vh; text-align: center; font-size: 1.3vh; color: rgba(207,230,232,.45); pointer-events: none; }
+  .gate { height: 100vh; display: grid; place-items: center; text-align: center; padding: 4vh; font-size: 2.4vh; }
+</style>
+</head>
+<body>
+<div class="screen" id="screen" hidden>
+  <div class="top">
+    <div class="plate"><img src="logo.svg" alt="Medical Services · Ministry of Interior"></div>
+    <div><div class="dept" id="dept">Adult Emergency Department</div><div class="inst" id="inst">Security Forces Hospital – Riyadh</div></div>
+    <div class="clock" id="clock">--:--</div>
+  </div>
+  <div class="main">
+    <div>
+      <div class="eyebrow">Attendance</div>
+      <h1 id="program">Morning Report</h1>
+      <div class="date" id="date"></div>
+      <div class="state">
+        <div id="pill"></div>
+        <div class="big" id="big"></div>
+        <div class="sub" id="sub"></div>
+        <div class="bar" id="barWrap"><i id="bar"></i></div>
+        <div class="count"><b id="count">0</b><span>registered so far</span></div>
+        <div class="recent" id="recent"></div>
+      </div>
+    </div>
+    <div class="qrbox">
+      <div class="qr-card"><div id="qr"></div></div>
+      <div class="scan">Scan to register</div>
+      <div class="scan-sub" id="scanSub">Sign in with Google · be in the classroom</div>
+      <div class="live" id="live" hidden><svg class="ring" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="rgba(191,157,104,.3)" stroke-width="3"/><circle id="ringArc" cx="10" cy="10" r="8" fill="none" stroke="#BF9D68" stroke-width="3" stroke-dasharray="50.3" stroke-dashoffset="0"/></svg><span>Live code · refreshes automatically</span></div>
+    </div>
+  </div>
+  <div class="steps">
+    <div><b>1</b>Scan the QR code</div>
+    <div><b>2</b>Sign in with Google</div>
+    <div><b>3</b>Confirm name, ID &amp; level</div>
+    <div><b>4</b>Keep your location on</div>
+  </div>
+</div>
+<div class="gate" id="gate" hidden></div>
+<button class="fs" id="fs" type="button">Full screen</button>
+<div class="credit-d">Developed by Dr. Swaid Saulat · Patient Flow Management System, powered by Ruqelo · patientflowms.com · ruqelo.com</div>
+
+<script src="config.js"></script>
+<script src="core.js"></script>
+<script src="qrcode.js"></script>
+<script src="qr.js"></script>
+<script>
+(function () {
+  'use strict';
+  const { $, esc } = MR;
+  const key = MR.qs.get('key') || (MR.DEMO ? 'DEMOKEY' : '');
+  let D = null, lastQr = '', fails = 0, codeAt = 0;
+
+  if (!key) { gate('This screen needs its display key.<br><span style="opacity:.7;font-size:.8em">Open it from the Admin dashboard → System &amp; links → Classroom display.</span>'); return; }
+
+  function gate(html) { $('#screen').hidden = true; $('#gate').hidden = false; $('#gate').innerHTML = '<div>' + html + '</div>'; }
+
+  async function poll() {
+    const res = await MR.call('display', { key });
+    if (!res.ok) {
+      if (res.code === 'FORBIDDEN') return gate(esc(res.message));
+      fails++;
+      showErr('Connection problem, retrying… (' + fails + ')');
+      return setTimeout(poll, 15000);
+    }
+    fails = 0; showErr('');
+    const prev = D ? D.count : null;
+    D = res;
+    $('#gate').hidden = true; $('#screen').hidden = false;
+    $('#dept').textContent = D.department; $('#inst').textContent = D.institution; $('#program').textContent = D.program;
+    $('#date').textContent = D.session.label;
+    $('#count').textContent = D.count;
+    if (prev !== null && D.count > prev) { $('#count').animate([{ transform: 'scale(1.2)' }, { transform: 'scale(1)' }], { duration: 400 }); }
+    $('#recent').innerHTML = (D.recent || []).map(r => '<span>' + esc(r.name) + ' · ' + esc(r.time) + '</span>').join('');
+    $('#scanSub').textContent = 'Sign in with Google' + (D.geofence ? ' · be within ' + D.radius + ' m of the classroom' : '');
+    drawQr();
+    const live = D.session.state === 'open' || D.session.state === 'upcoming';
+    setTimeout(poll, D.liveCode ? 10000 : (live ? 15000 : 60000));
+  }
+
+  function drawQr() {
+    const base = D.attendeeUrl || MR.attendeeUrl();
+    const open = D.session.state === 'open' || D.session.state === 'upcoming';
+    if (!open && D.liveCode) { $('#qr').innerHTML = '<div class="qr-off">Registration is closed</div>'; lastQr = ''; $('#live').hidden = true; return; }
+    const url = D.liveCode ? base + (base.indexOf('?') >= 0 ? '&' : '?') + 'k=' + encodeURIComponent(D.liveCode) : base;
+    $('#live').hidden = !D.liveCode;
+    if (url !== lastQr) { $('#qr').innerHTML = MRQR.svg(url); lastQr = url; codeAt = Date.now(); }
+  }
+
+  function tick() {
+    if (!D) return;
+    const now = MR.now(), s = D.session, tz = 'Asia/Riyadh';
+    $('#clock').textContent = MR.clock(now, tz);
+    const t = now.getTime(), st0 = new Date(s.startAt).getTime(), cl = new Date(s.closeAt).getTime();
+    let state = s.isSessionDay ? (t < st0 ? 'upcoming' : t <= cl ? 'open' : 'closed') : s.state;
+    const nx = D.nextSession;
+    let pill, big, sub, pct = null;
+    if (state === 'open') { pill = '<span class="pill open"><span class="dot"></span>Registration open</span>'; big = MR.countdown(cl - t); sub = 'remaining · closes at ' + s.end; pct = (t - st0) / (cl - st0) * 100; }
+    else if (state === 'upcoming') { pill = '<span class="pill"><span class="dot"></span>Opens at ' + esc(s.start) + '</span>'; big = MR.countdown(st0 - t); sub = 'until registration opens'; }
+    else if (state === 'closed') { pill = '<span class="pill closed"><span class="dot"></span>Registration closed</span>'; big = 'Closed'; sub = 'Closed at ' + s.end + (nx ? ' · next: ' + nx.label.replace(/,? \d{4}$/, '') + ' ' + nx.start : ''); pct = 100; }
+    else { pill = '<span class="pill"><span class="dot"></span>No session today</span>'; big = '—'; sub = nx ? 'Next session: ' + nx.label.replace(/,? \d{4}$/, '') + ' at ' + nx.start : ''; }
+    $('#pill').innerHTML = pill; $('#big').textContent = big; $('#sub').textContent = sub;
+    $('#barWrap').hidden = pct === null; if (pct !== null) $('#bar').style.width = Math.min(100, Math.max(0, pct)).toFixed(1) + '%';
+    if (D.liveCode) { const frac = ((Date.now() - codeAt) / 1000 % (D.codeRefreshSec || 30)) / (D.codeRefreshSec || 30); $('#ringArc').setAttribute('stroke-dashoffset', (50.3 * frac).toFixed(1)); }
+    if (state !== s.state && (state === 'open' || state === 'closed')) { s.state = state; drawQr(); }
+  }
+
+  function showErr(m) { let e = document.querySelector('.err'); if (!m) { if (e) e.remove(); return; } if (!e) { e = document.createElement('div'); e.className = 'err'; document.body.appendChild(e); } e.textContent = m; }
+
+  // Keep the screen awake and allow full screen.
+  async function wake() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (e) { /* ignore */ } }
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') wake(); });
+  $('#fs').onclick = () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {}); else document.exitFullscreen(); };
+  document.addEventListener('fullscreenchange', () => { $('#fs').hidden = !!document.fullscreenElement; });
+
+  wake(); poll(); setInterval(tick, 1000);
+  setInterval(() => location.reload(), 6 * 3600 * 1000); // daily freshness for screens left on
+})();
+</script>
+</body>
+</html>
