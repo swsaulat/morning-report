@@ -218,7 +218,29 @@
   };
 
   /* ---------- Boot ---------- */
+  // Google blocks sign-in inside apps' built-in browsers (Outlook, Teams, Telegram, Instagram, Facebook...).
+  function inAppBrowser() {
+    const ua = navigator.userAgent || '';
+    if (/FBAN|FBAV|Instagram|Line\/|Snapchat|Telegram|MicroMessenger|LinkedInApp|Teams|Outlook|; wv\)/i.test(ua)) return true;
+    return /iPhone|iPad|iPod/.test(ua) && !/Safari\//.test(ua);
+  }
+  function inAppWarning() {
+    if (!inAppBrowser()) return;
+    const url = location.href.split('#')[0];
+    const box = document.createElement('div');
+    box.className = 'card';
+    box.style.cssText = 'border:2px solid #C8964A;background:#FBF7EF;padding:14px 16px;margin:12px 0';
+    box.innerHTML = '<b style="display:block;font-size:15px;margin-bottom:4px">Open this page in Safari or Chrome</b>' +
+      '<span style="font-size:13.5px;color:#3B5563">Google sign-in does not work inside this app. Tap the <b>⋯</b> or <b>Share</b> menu and choose <b>Open in Safari / Open in Chrome</b>, or copy the link and paste it in your browser.</span>' +
+      '<button type="button" class="btn btn-ghost btn-block" style="margin-top:10px" id="copyLink">Copy link</button>';
+    const hero = document.querySelector('.hero');
+    if (hero && hero.parentNode) hero.parentNode.insertBefore(box, hero.nextSibling);
+    const b = document.getElementById('copyLink');
+    if (b) b.onclick = () => { try { navigator.clipboard.writeText(url); b.textContent = 'Link copied. Paste it in Safari or Chrome'; } catch (e) { prompt('Copy this link:', url); } };
+  }
+
   async function boot() {
+    inAppWarning();
     const k = MR.qs.get('k');
     try {
       if (k) { sessionStorage.setItem('mr.k', k); history.replaceState(null, '', location.pathname + (MR.DEMO && MR.qs.has('demo') ? '?demo' : '')); }
@@ -386,7 +408,7 @@
 
   function validate() {
     const name = $('#fullName').value.trim().replace(/\s+/g, ' ');
-    const id = $('#staffId').value.replace(/\s+/g, '').toUpperCase();
+    const id = $('#staffId').value.replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x0660)).replace(/[\u06F0-\u06F9]/g, d => String(d.charCodeAt(0) - 0x06F0)).replace(/[\s.\/\\_]+/g, '').toUpperCase();
     let re; try { re = new RegExp(S.cfg.staffIdPattern); } catch (e) { re = /^[A-Za-z0-9-]{3,20}$/; }
     if (name.split(' ').length < 2 || name.replace(/[^\p{L}]/gu, '').length < 3) { fieldErr('fullName', 'Please enter your first and last name.'); return null; }
     if (!re.test(id)) { fieldErr('staffId', 'Please enter a valid ' + S.cfg.staffIdLabel + '.'); return null; }
