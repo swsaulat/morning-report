@@ -107,7 +107,9 @@
         context: 'signin'
       });
       const w = Math.min(Math.max(el.clientWidth || 300, 220), 400);
-      google.accounts.id.renderButton(el, { type: 'standard', theme: 'outline', size: 'large', shape: 'pill', text: 'continue_with', logo_alignment: 'center', width: w });
+      const btnOpts = { type: 'standard', theme: 'outline', size: 'large', shape: 'pill', text: 'continue_with', logo_alignment: 'center', width: w };
+      if (window.MRI18N && MRI18N.ar) btnOpts.locale = 'ar'; // Google's own button text in Arabic
+      google.accounts.id.renderButton(el, btnOpts);
       if (opts.oneTap !== false) { try { google.accounts.id.prompt(); } catch (e) { /* ignore */ } }
     }
   };

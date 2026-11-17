@@ -168,4 +168,24 @@ a { color: var(--teal-d); }
 /* ---------- Demo ribbon ---------- */
 .demo-ribbon { position: fixed; top: 10px; right: -34px; transform: rotate(45deg); background: var(--gold); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .1em; padding: 4px 40px; z-index: 200; box-shadow: var(--shadow); pointer-events: none; }
 
+/* ---------- Arabic (right-to-left) ----------
+   Applies only when i18n.js sets <html lang="ar" dir="rtl">. English is unaffected. */
+[dir="rtl"] .loc-help ol, [dir="rtl"] .doc ul { padding-left: 0; padding-right: 18px; }
+[dir="rtl"] .kv b { text-align: left; }
+[dir="rtl"] input[type="email"], [dir="rtl"] input[type="url"] { direction: ltr; text-align: right; }
+[dir="rtl"] .brandbar-in .title { padding-left: 0; border-left: 0; padding-right: 14px; border-right: 1px solid var(--line); }
+[dir="rtl"] .me { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .me .who-txt { text-align: left !important; }
+[dir="rtl"] #me[hidden] + .lang-slot { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .t th { text-align: right; }
+[dir="rtl"] .t td.acts { text-align: left; }
+[dir="rtl"] .t td.acts .iconbtn + .iconbtn { margin-left: 0; margin-right: 4px; }
+[dir="rtl"] .hbar .n, [dir="rtl"] .pbar .n { text-align: left; }
+[dir="rtl"] .hbar .fill, [dir="rtl"] .pbar .fill { border-radius: 4px 0 0 4px; }
+[dir="rtl"] .menu-list { right: auto; left: 0; }
+[dir="rtl"] .menu-list button, [dir="rtl"] .menu-list a { text-align: right; }
+[dir="rtl"] .chart svg { direction: ltr; }
+[dir="rtl"] .credit a { unicode-bidi: isolate; }
+[dir="rtl"] #prevDay svg, [dir="rtl"] #nextDay svg { transform: scaleX(-1); }
+
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

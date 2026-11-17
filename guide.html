@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="i18n.js"></script>
 <style>
   :root { --teal: #1F9AA3; --teal-d: #0E5F68; --gold: #BF9D68; --ink: #0F2A37; --ink2: #3B5563; --mute: #6B808C; --line: #E1E9ED; --soft: #F3F8F9; }
   * { box-sizing: border-box; }
@@ -37,14 +38,20 @@
   .foot { margin-top: auto; padding-top: 4mm; border-top: .3mm solid var(--line); display: flex; justify-content: space-between; font-size: 2.9mm; color: var(--mute); }
   .bar { position: sticky; top: 0; z-index: 2; background: #0F2A37; color: #fff; padding: 10px 16px; display: flex; gap: 12px; align-items: center; font-size: 13px; }
   .bar button { padding: 8px 14px; border-radius: 8px; border: 0; background: var(--gold); color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+  /* Arabic (right-to-left) */
+  [dir="rtl"] ul, [dir="rtl"] ol { padding-left: 0; padding-right: 5.5mm; }
+  [dir="rtl"] th, [dir="rtl"] td { text-align: right; }
+  [dir="rtl"] td.y, [dir="rtl"] td.x { text-align: center; }
+  [dir="rtl"] .tip { border-left: 0; border-right: 1.2mm solid var(--gold); border-radius: 2mm 0 0 2mm; }
+  [dir="rtl"] .link { direction: ltr; unicode-bidi: isolate; }
   @page { size: A4 portrait; margin: 0; }
   @media print { html, body { background: #fff; } .bar { display: none; } .page { margin: 0; box-shadow: none; page-break-after: always; min-height: 296mm; } .page:last-child { page-break-after: auto; } }
 </style>
 </head>
 <body>
-<div class="bar"><b>Guide</b><span style="opacity:.75">Morning Report Attendance · for recipients and managers</span><span style="flex:1"></span><button onclick="window.print()">Print / Save as PDF</button></div>
+<div class="bar"><b>Guide</b><span style="opacity:.75">Morning Report Attendance · for recipients and managers</span><span style="flex:1"></span><span data-lang-switch></span><button onclick="window.print()">Print / Save as PDF</button></div>
 
-<section class="page">
+<section class="page" data-lang="en">
   <div class="head">
     <img src="logo.svg" alt="Morning Report" style="border-radius:5mm">
     <div>
@@ -87,7 +94,7 @@
   <div class="foot"><span>Morning Report Attendance System · Adult Emergency Unit – Emergency Department</span><span>Page 1 of 2</span></div>
 </section>
 
-<section class="page">
+<section class="page" data-lang="en">
   <div class="head" style="padding-bottom:3mm">
     <img src="logo.svg" alt="" style="height:14mm;border-radius:3.5mm">
     <div><div class="t1">Morning Report Attendance</div><div class="t2" style="font-size:6mm">For managers · Reprinting the QR · Help</div></div>
@@ -125,6 +132,89 @@
   </ul>
 
   <div class="foot"><span>Patient Flow Management System, powered by Ruqelo</span><span>Page 2 of 2</span></div>
+</section>
+
+<section class="page" data-lang="ar">
+  <div class="head">
+    <img src="logo.svg" alt="التقرير الصباحي" style="border-radius:5mm">
+    <div>
+      <div class="t1">وحدة طوارئ البالغين – قسم الطوارئ</div>
+      <div class="t2">حضور التقرير الصباحي<br>دليل المستلمين والمديرين</div>
+      <div class="t3">كيفية عرض الحضور، واستلام التقارير، وتصحيح الإدخالات، وإعادة طباعة ملصق رمز QR</div>
+    </div>
+  </div>
+
+  <h2><span class="n">1</span>ما يصلك تلقائيًا</h2>
+  <ul>
+    <li><b>تقرير يومي (PDF)</b> بالبريد الإلكتروني نحو الساعة <b>07:15</b> في كل يوم جلسة (من الأحد إلى الخميس): الأسماء والأرقام الوظيفية والمستويات التدريبية وأوقات التسجيل وإجمالي الحضور.</li>
+    <li><b>ملخص شهري (PDF)</b> في <b>اليوم الأول من كل شهر</b>، و<b>ملخص سنوي</b> في <b>1 يناير</b>: الجلسات المنعقدة، والحضور في كل جلسة، ونسبة حضور كل متدرب.</li>
+    <li>تُحفظ جميع ملفات PDF أيضًا في مجلد Google Drive المشترك <b>«Morning Report Attendance – PDF Archive»</b> (Drive ← <b>مشترك معي</b>).</li>
+    <li>ملف Google Sheet للقراءة فقط <b>«… Attendance Register (read-only)»</b> يضم كل التسجيلات ويُحدَّث كل 10 دقائق (Drive ← مشترك معي). يحتوي تبويبه الأول <b>Start Here</b> على جميع الروابط الواردة في هذا الدليل.</li>
+  </ul>
+
+  <h2><span class="n">2</span>فتح لوحة الإدارة</h2>
+  <div class="box">
+    <p>لوحة الإدارة: <span class="link" data-u="admin.html">morningreport.patientflowms.com/admin.html</span></p>
+  </div>
+  <ol>
+    <li>افتح الرابط على جوالك أو حاسوبك واضغط <b>المتابعة باستخدام Google</b>.</li>
+    <li>اختر حساب Google المسجَّل كمستلم (الحساب الذي تصله التقارير).</li>
+    <li>سترى <b>حضور اليوم مباشرةً</b>، واتجاه آخر 30 جلسة، والحضور حسب المستوى التدريبي، والمحاولات المرفوضة، وسجل التغييرات. استخدم أسهم التاريخ لعرض أي يوم سابق.</li>
+    <li>تبويب <b>حضور المتدربين</b>: نسبة حضور كل متدرب خلال فترة من آخر 30 يومًا حتى 12 شهرًا. يتيح <b>تصدير CSV</b> تنزيل البيانات.</li>
+  </ol>
+
+  <h2><span class="n">3</span>الصلاحيات</h2>
+  <table>
+    <tr><th>المهمة</th><th style="width:22%">صلاحية العرض</th><th style="width:22%">صلاحية الإدارة</th></tr>
+    <tr><td>عرض الحضور والاتجاهات والسجل؛ تصدير CSV</td><td class="y">✓</td><td class="y">✓</td></tr>
+    <tr><td>استلام جميع تقارير PDF؛ فتح السجل للقراءة فقط وأرشيف PDF</td><td class="y">✓</td><td class="y">✓</td></tr>
+    <tr><td>تنزيل ملصق رمز QR وإعادة طباعته</td><td class="y">✓</td><td class="y">✓</td></tr>
+    <tr><td>إضافة حضور فائت، أو تصحيح إدخال أو حذفه</td><td class="x">–</td><td class="y">✓</td></tr>
+    <tr><td>إرسال التقرير بالبريد إلى جميع المستلمين</td><td class="x">–</td><td class="y">✓</td></tr>
+    <tr><td>الإعدادات والمستلمون وأوقات الجلسات وموقع القاعة</td><td colspan="2" style="text-align:center">مالك النظام فقط</td></tr>
+  </table>
+
+  <div class="foot"><span>نظام حضور التقرير الصباحي · وحدة طوارئ البالغين – قسم الطوارئ</span><span>صفحة 1 من 2</span></div>
+</section>
+
+<section class="page" data-lang="ar">
+  <div class="head" style="padding-bottom:3mm">
+    <img src="logo.svg" alt="" style="height:14mm;border-radius:3.5mm">
+    <div><div class="t1">حضور التقرير الصباحي</div><div class="t2" style="font-size:6mm">للمديرين · إعادة طباعة رمز QR · المساعدة</div></div>
+  </div>
+
+  <h2><span class="n">4</span>تصحيح الحضور (صلاحية الإدارة)</h2>
+  <ul>
+    <li><b>شخص حضر ولم يتمكن من التسجيل</b> (مشكلة في الجوال أو تعذّر GPS): لوحة الإدارة ← <b>+ إدخال يدوي</b> ← التاريخ والوقت والاسم والرقم والمستوى والملاحظة ← <b>إضافة الإدخال</b>. يظهر بعلامة <i>يدوي</i> في السجل والتقرير.</li>
+    <li><b>خطأ في الاسم أو الرقم أو المستوى أو الوقت:</b> في السجل، اضغط <b>✎</b> في ذلك الصف، وصحّح البيانات، واكتب سببًا مختصرًا، ثم اضغط <b>حفظ التصحيح</b>.</li>
+    <li><b>إدخال لا ينبغي وجوده</b> (سُجّل بالخطأ): اضغط <b>🗑</b>، واكتب السبب، ثم <b>حذف الإدخال</b>.</li>
+    <li><b>إعادة إرسال التقرير</b> بعد التصحيح: <b>إرسال التقرير بالبريد ▾ ← أرسل إلى جميع المستلمين</b> (أو <i>أرسل نسخة إليّ</i>).</li>
+  </ul>
+  <div class="tip"><p>يُسجَّل كل تصحيح أو حذف مع <b>من</b> أجراه و<b>متى</b> و<b>القيمة قبل ← بعد</b> و<b>السبب</b>. يمكنك الاطلاع عليه في لوحة الإدارة ضمن <b>سجل التغييرات</b>. تبقى الإدخالات المحذوفة محفوظة في سجل التدقيق، ويمكن لمالك النظام استعادتها.</p></div>
+
+  <h2><span class="n">5</span>ملصق رمز QR: التنزيل وإعادة الطباعة</h2>
+  <p>إذا فُقد الملصق في القاعة أو تلف أو أُزيل، يمكن لأي شخص في قائمة المستلمين طباعة ملصق جديد. <b>رمز QR لا يتغيّر أبدًا</b>، لذا تبقى النسخة القديمة صالحة.</p>
+  <div class="grid2">
+    <div class="box"><p><b>ملف PDF مباشر (A4)</b><br><span class="link" data-u="QR-Poster.pdf">morningreport.patientflowms.com/QR-Poster.pdf</span></p></div>
+    <div class="box"><p><b>أماكن أخرى</b><br>السجل للقراءة فقط ← تبويب <b>Start Here</b> · أرشيف PDF في Drive ← <b>Printables</b> · لوحة الإدارة ← <b>النظام والروابط</b></p></div>
+  </div>
+  <p style="margin-top:2mm">اطبع على <b>ورق A4 بمقياس 100%</b> (أو A3 مع «ملاءمة للصفحة» لملصق أكبر). ضعه في مستوى النظر قرب مدخل القاعة.</p>
+
+  <h2><span class="n">6</span>كيف يسجّل الحاضرون (للاطلاع)</h2>
+  <ol>
+    <li>امسح رمز QR بكاميرا الجوال بين الساعة <b>06:00 و06:45</b> (بتوقيت الرياض).</li>
+    <li>سجّل الدخول بأي حساب Google، وأدخل الاسم الكامل والرقم الوظيفي والمستوى التدريبي.</li>
+    <li>اسمح بالوصول إلى الموقع: يجب أن يكون الجوال <b>داخل نطاق القاعة</b>. تسجيل واحد لكل شخص في كل جلسة؛ تُرفض المحاولات المتأخرة أو عن بُعد وتظهر ضمن <i>المحاولات المرفوضة</i>.</li>
+  </ol>
+
+  <h2><span class="n">7</span>المساعدة</h2>
+  <ul>
+    <li><b>«لا توجد صلاحية للوحة الإدارة»:</b> أنت مسجّل الدخول بحساب Google مختلف. اضغط <b>تسجيل الخروج</b> واختر الحساب الذي تصله التقارير.</li>
+    <li><b>متدرب تظهر له رسالة «الرقم مرتبط بحساب آخر»:</b> سبق أن استخدم حساب Google مختلفًا. أضف حضوره يدويًا وأبلغ مالك النظام.</li>
+    <li><b>تغيير الأوقات أو المستلمين أو الإعدادات أو موقع القاعة:</b> تواصل مع مالك النظام (<span class="link" style="font-weight:600">swsaulat@gmail.com</span>).</li>
+  </ul>
+
+  <div class="foot"><span>نظام إدارة تدفق المرضى، مدعوم من Ruqelo</span><span>صفحة 2 من 2</span></div>
 </section>
 <script src="config.js"></script>
 <script>

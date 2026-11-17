@@ -12,11 +12,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="app.css">
+<script src="i18n.js"></script>
 <style>
   .wrap { max-width: 1180px; margin: 0 auto; padding: 18px 16px 48px; }
   .brandbar-in .title { font-weight: 800; font-size: 15px; letter-spacing: -.01em; padding-left: 14px; border-left: 1px solid var(--line); }
   .brandbar-in .title small { display: block; font-weight: 500; color: var(--mute); font-size: 12px; }
   .me { display: flex; align-items: center; gap: 10px; margin-left: auto; font-size: 13px; }
+  #me[hidden] + .lang-slot { margin-left: auto; }
   .me .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--teal-soft); color: var(--teal-d); display: grid; place-items: center; font-weight: 800; font-size: 13px; }
   @media (max-width: 640px) { .me .who-txt, .brandbar-in .title small { display: none; } .brand-logo { height: 40px; width: 40px; } }
 
@@ -124,8 +126,9 @@
 <header class="brandbar">
   <div class="brandbar-in">
     <img class="brand-logo" src="logo.svg" alt="Morning Report">
-    <div class="title">Attendance Admin<small id="sub">Adult Emergency Unit – Emergency Department · Morning Report</small></div>
+    <div class="title">Attendance Admin<small id="sub" translate="no">Adult Emergency Unit – Emergency Department · Morning Report</small></div>
     <div class="me" id="me" hidden></div>
+    <div class="lang-slot" data-lang-switch></div>
   </div>
 </header>
 
