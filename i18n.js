@@ -47,6 +47,7 @@
     '[dir="rtl"] .lang-fixed{right:auto;left:10px}' +
     'html:not([lang="ar"]) [data-lang="ar"],html[lang="ar"] [data-lang="en"]{display:none!important}' +
     'html[lang="ar"] body,html[lang="ar"] body *:not(.lang-switch):not(svg):not(path){font-family:system-ui,-apple-system,"Segoe UI",Tahoma,"Noto Sans Arabic","Noto Naskh Arabic","Geeza Pro",sans-serif!important;letter-spacing:0!important}' +
+    'html[lang="ar"] #pin,html[lang="ar"] .pin b{letter-spacing:.12em!important}' +
     '@media print{.lang-switch{display:none!important}}';
   var st = document.createElement('style');
   st.id = 'i18n-css';
